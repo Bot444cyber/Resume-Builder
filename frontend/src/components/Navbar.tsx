@@ -48,10 +48,16 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
         ? (isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-gray-100')
         : 'bg-transparent border-transparent';
 
+    // Navigation Data
     const navLinks = [
-        { name: 'Templates', href: '#', icon: LayoutTemplate },
+        { name: 'Templates', href: '/templates', icon: LayoutTemplate },
         { name: 'Services', href: '#', icon: Briefcase },
         { name: 'Resources', href: '#', icon: FileText },
+    ];
+
+    const actionLinks = [
+        { name: 'Log in', href: '/login', type: 'text' },
+        { name: 'Create Resume', href: '/templates', type: 'primary', icon: ArrowRight }
     ];
 
     if (isEditorMode) {
@@ -125,14 +131,18 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
                             {isDark ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
 
-                        <Link href="/login" className={`text-sm font-semibold ${textColorClass} ${hoverColorClass} transition-colors`}>
-                            Log in
-                        </Link>
-
-                        <Link href="/templates" className={`flex items-center gap-2 text-sm font-bold px-6 py-2.5 rounded-full transition-all shadow-md group ${isDark ? 'bg-white text-black hover:bg-gray-200' : 'bg-slate-900 text-white hover:bg-slate-800'}`}>
-                            Create Resume
-                            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-                        </Link>
+                        {actionLinks.map((action) => (
+                            action.type === 'text' ? (
+                                <Link key={action.name} href={action.href} className={`text-sm font-semibold ${textColorClass} ${hoverColorClass} transition-colors`}>
+                                    {action.name}
+                                </Link>
+                            ) : (
+                                <Link key={action.name} href={action.href} className={`flex items-center gap-2 text-sm font-bold px-6 py-2.5 rounded-full transition-all shadow-md group ${isDark ? 'bg-white text-black hover:bg-gray-200' : 'bg-slate-900 text-white hover:bg-slate-800'}`}>
+                                    {action.name}
+                                    {action.icon && <action.icon className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />}
+                                </Link>
+                            )
+                        ))}
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -169,12 +179,19 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
                         </Link>
                     ))}
                     <div className="mt-8 flex flex-col gap-4">
-                        <Link href="/login" className={`w-full py-4 text-center font-bold rounded-xl ${isDark ? 'text-white bg-white/10' : 'text-slate-700 bg-slate-50'}`} onClick={() => setMobileMenuOpen(false)}>
-                            Log in
-                        </Link>
-                        <Link href="/templates" className="w-full py-4 text-center font-bold text-white bg-blue-600 rounded-xl shadow-lg shadow-blue-500/30" onClick={() => setMobileMenuOpen(false)}>
-                            Create Resume Now
-                        </Link>
+                        {actionLinks.map((action) => (
+                            <Link
+                                key={action.name}
+                                href={action.href}
+                                className={`w-full py-4 text-center font-bold rounded-xl ${action.type === 'text'
+                                        ? (isDark ? 'text-white bg-white/10' : 'text-slate-700 bg-slate-50')
+                                        : 'text-white bg-blue-600 shadow-lg shadow-blue-500/30'
+                                    }`}
+                                onClick={() => setMobileMenuOpen(false)}
+                            >
+                                {action.name}
+                            </Link>
+                        ))}
                     </div>
                 </div>
             </div>
