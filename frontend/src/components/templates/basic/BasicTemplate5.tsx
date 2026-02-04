@@ -1,11 +1,16 @@
-import React from 'react';
-import { ResumeData } from '../../../types';
+import { EditableItem } from '../../EditableItem';
+import { ResumeData, Experience, Education, Skill } from '../../../types';
 
 interface BasicResumeTemplateProps {
     data: ResumeData;
+    onUpdate: (field: keyof ResumeData, value: string) => void;
+    onExpUpdate: (id: string, field: keyof Experience, value: string) => void;
+    onEduUpdate: (id: string, field: keyof Education, value: string) => void;
+    onTitleUpdate: (section: 'summary' | 'experience' | 'skills' | 'education', value: string) => void;
+    onSkillUpdate: (id: string, field: keyof Skill, value: string | number) => void;
 }
 
-export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data }) => {
+export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data, onUpdate, onExpUpdate, onEduUpdate, onTitleUpdate }) => {
     return (
         <div className="w-[210mm] min-h-[297mm] bg-[#E8E8E8] mx-auto shadow-2xl relative overflow-hidden font-sans text-stone-800 p-12">
 
@@ -13,13 +18,17 @@ export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data }) => 
             <header className="mb-12 relative">
                 <div className="flex justify-between items-start mb-4">
                     <div>
-                        <h1 className="text-5xl font-normal tracking-wide text-stone-900 mb-2">{data.name}</h1>
-                        <p className="text-lg uppercase tracking-[0.2em] text-stone-600">{data.title}</p>
+                        <h1 className="text-5xl font-normal tracking-wide text-stone-900 mb-2">
+                            <EditableItem value={data.name} onChange={(val) => onUpdate('name', val)} />
+                        </h1>
+                        <p className="text-lg uppercase tracking-[0.2em] text-stone-600">
+                            <EditableItem value={data.title} onChange={(val) => onUpdate('title', val)} />
+                        </p>
                     </div>
                     <div className="text-right text-sm text-stone-500 font-light leading-relaxed">
-                        <div>Santa Monica, CA</div>
-                        <div>{data.email}</div>
-                        <div>{data.phone}</div>
+                        {data.address && <div><EditableItem value={data.address} onChange={(val) => onUpdate('address', val)} /></div>}
+                        <div><EditableItem value={data.email} onChange={(val) => onUpdate('email', val)} /></div>
+                        <div><EditableItem value={data.phone} onChange={(val) => onUpdate('phone', val)} /></div>
                     </div>
                 </div>
 
@@ -43,20 +52,22 @@ export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data }) => 
                 {/* Left Column */}
                 <aside className="col-span-4 pr-4 space-y-12">
                     <section>
-                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">About Me</h2>
-                        <p className="text-xs leading-loose text-justify text-stone-600 font-light">
-                            {data.summary}
-                        </p>
+                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">
+                            <EditableItem value={data.sectionTitles?.summary || 'About Me'} onChange={(val) => onTitleUpdate('summary', val)} />
+                        </h2>
+                        <div className="text-xs leading-loose text-justify text-stone-600 font-light">
+                            <EditableItem value={data.summary} onChange={(val) => onUpdate('summary', val)} multiline tagName='p' />
+                        </div>
                     </section>
 
                     <div className="w-full h-px bg-stone-400"></div>
 
                     <section>
-                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">Skills</h2>
+                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">
+                            <EditableItem value={data.sectionTitles?.skills || 'Skills'} onChange={(val) => onTitleUpdate('skills', val)} />
+                        </h2>
                         <div className="flex flex-col gap-2 text-xs font-light text-stone-600">
-                            {data.skills.split(',').map((skill, i) => (
-                                <span key={i} className="block">{skill.trim()}</span>
-                            ))}
+                            <EditableItem value={data.skills} onChange={(val) => onUpdate('skills', val)} multiline />
                         </div>
                     </section>
                 </aside>
@@ -64,20 +75,22 @@ export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data }) => 
                 {/* Right Column */}
                 <main className="col-span-8 space-y-12 pl-4">
                     <section>
-                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-6">Work Experience</h2>
+                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-6">
+                            <EditableItem value={data.sectionTitles?.experience || 'Work Experience'} onChange={(val) => onTitleUpdate('experience', val)} />
+                        </h2>
                         <div className="space-y-8">
                             {data.experiences.map((exp) => (
                                 <div key={exp.id}>
                                     <div className="flex items-baseline gap-2 mb-2 font-bold text-stone-800 text-sm uppercase">
-                                        <span>{exp.role}</span>
+                                        <span><EditableItem value={exp.role} onChange={(val) => onExpUpdate(exp.id, 'role', val)} /></span>
                                         <span className="text-stone-400">//</span>
-                                        <span>{exp.company}</span>
+                                        <span><EditableItem value={exp.company} onChange={(val) => onExpUpdate(exp.id, 'company', val)} /></span>
                                         <span className="text-stone-400">//</span>
-                                        <span>{exp.dates}</span>
+                                        <span><EditableItem value={exp.dates} onChange={(val) => onExpUpdate(exp.id, 'dates', val)} /></span>
                                     </div>
-                                    <p className="text-xs leading-relaxed text-stone-600 font-light text-justify pl-4 border-l border-stone-300">
-                                        • {exp.desc}
-                                    </p>
+                                    <div className="text-xs leading-relaxed text-stone-600 font-light text-justify pl-4 border-l border-stone-300">
+                                        <EditableItem value={exp.desc} onChange={(val) => onExpUpdate(exp.id, 'desc', val)} multiline tagName='p' />
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -86,24 +99,35 @@ export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data }) => 
                     <div className="w-full h-px bg-stone-400"></div>
 
                     <section>
-                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">Education</h2>
-                        <div className="text-sm">
-                            <span className="uppercase text-stone-700 font-medium">Bachelor of Science in Computer Science</span>
-                            <span className="text-stone-400 mx-2">//</span>
-                            <span className="uppercase text-stone-500">University of Tech</span>
-                            <span className="text-stone-400 mx-2">//</span>
-                            <span className="text-stone-500">2019</span>
+                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">
+                            <EditableItem value={data.sectionTitles?.education || 'Education'} onChange={(val) => onTitleUpdate('education', val)} />
+                        </h2>
+                        <div className="text-sm space-y-4">
+                            {data.education && data.education.map((edu) => (
+                                <div key={edu.id}>
+                                    <span className="uppercase text-stone-700 font-medium"><EditableItem value={edu.degree} onChange={(val) => onEduUpdate(edu.id, 'degree', val)} /></span>
+                                    <span className="text-stone-400 mx-2">//</span>
+                                    <span className="uppercase text-stone-500"><EditableItem value={edu.school} onChange={(val) => onEduUpdate(edu.id, 'school', val)} /></span>
+                                    <span className="text-stone-400 mx-2">//</span>
+                                    <span className="text-stone-500"><EditableItem value={edu.dates} onChange={(val) => onEduUpdate(edu.id, 'dates', val)} /></span>
+                                </div>
+                            ))}
                         </div>
                     </section>
 
                     <div className="w-full h-px bg-stone-400"></div>
 
-                    <section>
-                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">Certifications</h2>
-                        <div className="text-xs font-light text-stone-600 uppercase tracking-wide">
-                            Certified Training and Development Professional (CTDP)
-                        </div>
-                    </section>
+                    {/* Custom Section for Certifications */}
+                    {data.customSectionTitle && (
+                        <section>
+                            <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">
+                                <EditableItem value={data.customSectionTitle} onChange={(val) => onUpdate('customSectionTitle', val)} />
+                            </h2>
+                            <div className="text-xs font-light text-stone-600 uppercase tracking-wide">
+                                <EditableItem value={data.customSectionContent || ''} onChange={(val) => onUpdate('customSectionContent', val)} multiline tagName='div' />
+                            </div>
+                        </section>
+                    )}
                 </main>
             </div>
 

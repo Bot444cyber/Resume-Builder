@@ -6,6 +6,7 @@ import Footer from '../../components/Footer';
 import Link from 'next/link';
 import ResumeThumbnail from '../../components/ResumeThumbnail';
 import { TemplatePreview } from '../../components/TemplatePreview';
+import { TemplateCard } from '../../components/TemplateCard';
 
 const templates = [
     { id: 'basic-1', name: 'Classic Basic', category: 'Basic', color: 'bg-white' },
@@ -86,29 +87,9 @@ export default function TemplatesPage() {
                             ← Back to Categories
                         </button>
 
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
                             {filteredTemplates.map((template) => (
-                                <div key={template.id} className="flex flex-col items-center">
-                                    {/* ResumeThumbnail with Anti-Gravity Effect */}
-                                    <Link href={`/editor?template=${template.id}`} className="block mb-6">
-                                        <ResumeThumbnail scale={0.26}>
-                                            <TemplatePreview templateId={template.id} />
-                                        </ResumeThumbnail>
-                                    </Link>
-
-                                    {/* Template Info */}
-                                    <div className="text-center">
-                                        <h3 className="font-bold text-xl text-slate-900 dark:text-white mb-2">{template.name}</h3>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mb-4">{template.category}</p>
-                                        <Link
-                                            href={`/editor?template=${template.id}`}
-                                            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-                                        >
-                                            Use This Template
-                                            <span>→</span>
-                                        </Link>
-                                    </div>
-                                </div>
+                                <TemplateCard key={template.id} template={template} />
                             ))}
                         </div>
                     </div>

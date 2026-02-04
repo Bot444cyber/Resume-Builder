@@ -1,22 +1,28 @@
-import React from 'react';
-import { ResumeData } from '../../../types';
+import { EditableItem } from '../../EditableItem';
+import { ResumeData, Experience, Education, Skill } from '../../../types';
 
 interface BasicResumeTemplateProps {
     data: ResumeData;
+    onUpdate: (field: keyof ResumeData, value: string) => void;
+    onExpUpdate: (id: string, field: keyof Experience, value: string) => void;
+    onEduUpdate: (id: string, field: keyof Education, value: string) => void;
+    onTitleUpdate: (section: 'summary' | 'experience' | 'skills' | 'education', value: string) => void;
+    onSkillUpdate: (id: string, field: keyof Skill, value: string | number) => void;
 }
 
-export const BasicTemplate3: React.FC<BasicResumeTemplateProps> = ({ data }) => {
+export const BasicTemplate3: React.FC<BasicResumeTemplateProps> = ({ data, onUpdate, onExpUpdate, onEduUpdate, onTitleUpdate }) => {
     return (
         <div className="w-[210mm] min-h-[297mm] bg-white mx-auto shadow-2xl p-12 font-sans text-slate-900">
             {/* Header */}
             <header className="mb-4">
                 <h1 className="text-5xl font-normal uppercase tracking-wide mb-2">
-                    {data.name.split(' ').map((n, i) => (
-                        <span key={i} className={i === 0 ? "font-bold mr-3" : "font-normal"}>{n}</span>
-                    ))}
+                    <EditableItem value={data.name} onChange={(val) => onUpdate('name', val)} />
                 </h1>
-                <div className="text-xs uppercase text-slate-500 tracking-wide mb-8 font-medium">
-                    New York, NY 10012 (H) {data.phone} {data.email.toUpperCase()}
+                <div className="text-xs uppercase text-slate-500 tracking-wide mb-8 font-medium flex flex-wrap gap-2">
+                    {data.address && <EditableItem value={data.address} onChange={(val) => onUpdate('address', val)} />}
+                    <span>(H)</span>
+                    <EditableItem value={data.phone} onChange={(val) => onUpdate('phone', val)} />
+                    <EditableItem value={data.email} onChange={(val) => onUpdate('email', val)} />
                 </div>
                 {/* Red Line */}
                 <div className="w-full h-1.5 bg-red-700 mb-8"></div>
@@ -26,66 +32,67 @@ export const BasicTemplate3: React.FC<BasicResumeTemplateProps> = ({ data }) => 
                 {/* Summary Statement */}
                 <section className="grid grid-cols-12 gap-4">
                     <div className="col-span-3">
-                        <h2 className="text-sm font-bold uppercase text-slate-800">Summary Statement</h2>
+                        <h2 className="text-sm font-bold uppercase text-slate-800">
+                            <EditableItem value={data.sectionTitles?.summary || 'Summary Statement'} onChange={(val) => onTitleUpdate('summary', val)} />
+                        </h2>
                     </div>
                     <div className="col-span-9">
-                        <p className="text-xs leading-relaxed text-slate-700 font-medium text-justify">
-                            {data.summary}
-                        </p>
+                        <div className="text-xs leading-relaxed text-slate-700 font-medium text-justify">
+                            <EditableItem value={data.summary} onChange={(val) => onUpdate('summary', val)} multiline />
+                        </div>
                     </div>
                 </section>
 
                 {/* Skills */}
                 <section className="grid grid-cols-12 gap-4">
                     <div className="col-span-3">
-                        <h2 className="text-sm font-bold uppercase text-slate-800">Skills</h2>
+                        <h2 className="text-sm font-bold uppercase text-slate-800">
+                            <EditableItem value={data.sectionTitles?.skills || 'Skills'} onChange={(val) => onTitleUpdate('skills', val)} />
+                        </h2>
                     </div>
                     <div className="col-span-9">
-                        <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-xs font-medium text-slate-700">
-                            {data.skills.split(',').map((skill, i) => (
-                                <div key={i} className="flex items-center gap-2">
-                                    <span className="w-1 h-1 bg-black rounded-full"></span>
-                                    {skill.trim()}
-                                </div>
-                            ))}
+                        <div className="text-xs font-medium text-slate-700 leading-relaxed">
+                            <EditableItem value={data.skills} onChange={(val) => onUpdate('skills', val)} multiline />
                         </div>
                     </div>
                 </section>
 
-                {/* Professional Skills (Mocked based on image as data doesn't fully support categories yet) */}
-                <section className="grid grid-cols-12 gap-4">
-                    <div className="col-span-3">
-                        <h2 className="text-sm font-bold uppercase text-slate-800">Professional Skills</h2>
-                    </div>
-                    <div className="col-span-9 space-y-4">
-                        <div>
-                            <h3 className="text-sm font-bold text-slate-700 mb-1">Communication</h3>
-                            <ul className="list-disc list-inside text-xs leading-relaxed text-slate-700 font-medium space-y-1">
-                                <li>Developed and actualized customer service initiatives to decrease wait times.</li>
-                                <li>Maintained customer satisfaction with forward-thinking strategies.</li>
-                            </ul>
+                {/* Custom Section (formerly Professional Skills) */}
+                {data.customSectionTitle && (
+                    <section className="grid grid-cols-12 gap-4">
+                        <div className="col-span-3">
+                            <h2 className="text-sm font-bold uppercase text-slate-800">
+                                <EditableItem value={data.customSectionTitle} onChange={(val) => onUpdate('customSectionTitle', val)} />
+                            </h2>
                         </div>
-                        <div>
-                            <h3 className="text-sm font-bold text-slate-700 mb-1">Management</h3>
-                            <ul className="list-disc list-inside text-xs leading-relaxed text-slate-700 font-medium space-y-1">
-                                <li>Boosted sales revenue by skillfully promoting diverse service options.</li>
-                                <li>Managed over 20 POS register operations.</li>
-                            </ul>
+                        <div className="col-span-9 space-y-4">
+                            <div className="text-xs leading-relaxed text-slate-700 font-medium whitespace-pre-wrap">
+                                <EditableItem value={data.customSectionContent || ''} onChange={(val) => onUpdate('customSectionContent', val)} multiline tagName='div' />
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                )}
 
                 {/* Work History */}
                 <section className="grid grid-cols-12 gap-4">
                     <div className="col-span-3">
-                        <h2 className="text-sm font-bold uppercase text-slate-800">Work History</h2>
+                        <h2 className="text-sm font-bold uppercase text-slate-800">
+                            <EditableItem value={data.sectionTitles?.experience || 'Work History'} onChange={(val) => onTitleUpdate('experience', val)} />
+                        </h2>
                     </div>
                     <div className="col-span-9 space-y-6">
                         {data.experiences.map((exp) => (
                             <div key={exp.id}>
-                                <div className="text-xs font-bold text-slate-500 uppercase mb-1">{exp.dates}</div>
-                                <div className="text-sm font-bold text-slate-800">
-                                    {exp.role} <span className="font-normal mx-1">|</span> {exp.company} <span className="font-normal mx-1">|</span> New York, NY
+                                <div className="text-xs font-bold text-slate-500 uppercase mb-1">
+                                    <EditableItem value={exp.dates} onChange={(val) => onExpUpdate(exp.id, 'dates', val)} />
+                                </div>
+                                <div className="text-sm font-bold text-slate-800 mb-2">
+                                    <EditableItem value={exp.role} onChange={(val) => onExpUpdate(exp.id, 'role', val)} />
+                                    <span className="font-normal mx-1">|</span>
+                                    <EditableItem value={exp.company} onChange={(val) => onExpUpdate(exp.id, 'company', val)} />
+                                </div>
+                                <div className="text-xs leading-relaxed text-slate-700">
+                                    <EditableItem value={exp.desc} onChange={(val) => onExpUpdate(exp.id, 'desc', val)} multiline tagName='p' />
                                 </div>
                             </div>
                         ))}
@@ -95,14 +102,24 @@ export const BasicTemplate3: React.FC<BasicResumeTemplateProps> = ({ data }) => 
                 {/* Education */}
                 <section className="grid grid-cols-12 gap-4">
                     <div className="col-span-3">
-                        <h2 className="text-sm font-bold uppercase text-slate-800">Education</h2>
+                        <h2 className="text-sm font-bold uppercase text-slate-800">
+                            <EditableItem value={data.sectionTitles?.education || 'Education'} onChange={(val) => onTitleUpdate('education', val)} />
+                        </h2>
                     </div>
                     <div className="col-span-9 space-y-4">
-                        <div>
-                            <div className="text-xs font-bold text-slate-500 uppercase mb-1">June 2019</div>
-                            <div className="text-sm font-bold text-slate-800">Bachelor of Science</div>
-                            <div className="text-sm font-normal text-slate-700">University of Technology, New York, NY</div>
-                        </div>
+                        {data.education && data.education.map((edu) => (
+                            <div key={edu.id}>
+                                <div className="text-xs font-bold text-slate-500 uppercase mb-1">
+                                    <EditableItem value={edu.dates} onChange={(val) => onEduUpdate(edu.id, 'dates', val)} />
+                                </div>
+                                <div className="text-sm font-bold text-slate-800">
+                                    <EditableItem value={edu.degree} onChange={(val) => onEduUpdate(edu.id, 'degree', val)} />
+                                </div>
+                                <div className="text-sm font-normal text-slate-700">
+                                    <EditableItem value={edu.school} onChange={(val) => onEduUpdate(edu.id, 'school', val)} />
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </section>
             </div>

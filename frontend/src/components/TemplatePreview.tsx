@@ -30,11 +30,57 @@ const PREVIEW_DATA: ResumeData = {
         { id: '1', company: 'Tech Corp', role: 'Senior PM', dates: '2020 - Present', desc: 'Led cross-functional teams to launch 3 major products. Increased user engagement by 40%.' },
         { id: '2', company: 'StartUp Inc', role: 'Product Manager', dates: '2018 - 2020', desc: 'Managed product roadmap and strategy. Collaborated with engineering and design teams.' }
     ],
+    education: [
+        { id: '1', school: 'University of Technology', degree: 'MBA', dates: '2016 - 2018' },
+        { id: '2', school: 'State University', degree: 'BSc Computer Science', dates: '2012 - 2016' }
+    ],
+    profileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400",
     skills: "Product Management, Agile, Scrum, Jira, Python, SQL, User Research, A/B Testing",
+    skillsDetail: [
+        { id: '1', name: 'Product Strategy', level: 90 },
+        { id: '2', name: 'Agile/Scrum', level: 85 },
+        { id: '3', name: 'Data Analysis', level: 80 },
+        { id: '4', name: 'User Research', level: 75 }
+    ],
+    sectionTitles: {
+        summary: "Summary",
+        experience: "Experience",
+        skills: "Skills",
+        education: "Education"
+    },
     accentColor: "#2563eb",
     templateId: 'modern-1',
     sectionOrder: ['summary', 'experience', 'skills']
 };
+
+const TEMPLATE_DEFAULT_COLORS: Record<string, string> = {
+    'basic-1': '#2563eb', // Blue
+    'basic-2': '#1e293b', // Slate
+    'basic-3': '#059669', // Emerald
+    'basic-4': '#7c3aed', // Violet
+    'basic-5': '#ea580c', // Orange
+    'basic-6': '#0891b2', // Cyan
+    'modern-1': '#2563eb', // Blue
+    'modern-2': '#db2777', // Pink/Magenta
+    'modern-3': '#059669', // Emerald
+    'modern-4': '#7c3aed', // Violet
+    'modern-5': '#ea580c', // Orange
+    'professional-1': '#4f46e5', // Indigo
+    'professional-2': '#9333ea', // Purple
+    'professional-3': '#0891b2', // Cyan
+    'professional-4': '#be123c', // Rose
+    'professional-5': '#ca8a04', // Yellow/Gold
+    'professional-6': '#18181b', // Zinc/Black
+};
+
+const PROFILE_IMAGES = [
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400", // Man 1
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400", // Woman 1
+    "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400", // Man 2
+    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400", // Woman 2
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400", // Man 3
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=400", // Woman 3
+];
 
 interface TemplatePreviewProps {
     templateId: string;
@@ -45,7 +91,21 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ templateId }) 
     // The A4 size is ~210mm x 297mm. The preview container is smaller.
     // We'll use CSS scale to fit it.
 
-    const props = { data: PREVIEW_DATA };
+    const accentColor = TEMPLATE_DEFAULT_COLORS[templateId] || "#2563eb";
+
+    // Select image based on templateId string hash/length to be consistent but different
+    const imgIndex = templateId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % PROFILE_IMAGES.length;
+    const profileImage = PROFILE_IMAGES[imgIndex];
+
+    const props = {
+        data: { ...PREVIEW_DATA, accentColor, profileImage },
+        // Dummy handlers to satisfy prop types (not used in static preview)
+        onUpdate: () => { },
+        onExpUpdate: () => { },
+        onEduUpdate: () => { },
+        onTitleUpdate: () => { },
+        onSkillUpdate: () => { },
+    };
 
     let Component;
     switch (templateId) {
