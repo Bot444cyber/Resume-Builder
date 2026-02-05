@@ -20,17 +20,6 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
             </div>
 
             <div className="container mx-auto px-6 lg:px-24 relative z-10 flex flex-col items-center text-center">
-
-                {/* Top Badge */}
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 backdrop-blur-md mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700 shadow-xl shadow-black/5 dark:shadow-black/20">
-                    <div className="flex -space-x-2">
-                        {[...Array(3)].map((_, i) => (
-                            <div key={i} className="w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-600 border border-white dark:border-[#020617]" />
-                        ))}
-                    </div>
-                    <span className="text-sm font-medium text-slate-600 dark:text-gray-300 pl-2">Trusted by 100,000+ professionals</span>
-                </div>
-
                 {/* Headlines */}
                 <div className="max-w-4xl mx-auto mb-12 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
                     <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.1] mb-6 tracking-tight bg-clip-text text-transparent bg-linear-to-b from-slate-900 via-slate-700 to-slate-900 dark:from-white dark:via-blue-50 dark:to-gray-400">
@@ -136,12 +125,12 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                 {/* Bottom Text/Scroller */}
                 <div className="mt-20 text-center animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 pb-20">
                     <p className="text-slate-400 dark:text-gray-500 text-sm font-medium tracking-widest uppercase mb-8">Trusted by industry leaders</p>
-                    <div className="flex justify-center gap-12 opacity-30 grayscale mix-blend-multiply dark:mix-blend-screen">
-                        {/* Simple placeholder logos */}
-                        <div className="h-6 w-24 bg-slate-400 dark:bg-white rounded"></div>
-                        <div className="h-6 w-24 bg-slate-400 dark:bg-white rounded"></div>
-                        <div className="h-6 w-24 bg-slate-400 dark:bg-white rounded"></div>
-                        <div className="h-6 w-24 bg-slate-400 dark:bg-white rounded"></div>
+                    <div className="w-full overflow-hidden opacity-30 grayscale mix-blend-multiply dark:mix-blend-screen">
+                        <div className="flex w-max animate-marquee-right gap-12 items-center">
+                            {[...Array(32)].map((_, i) => (
+                                <div key={i} className="h-6 w-24 bg-slate-400 dark:bg-white rounded flex-shrink-0"></div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
