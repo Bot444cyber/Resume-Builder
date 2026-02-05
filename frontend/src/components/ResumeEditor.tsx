@@ -195,17 +195,20 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
     const [zoom, setZoom] = useState(0.8);
 
     // Optimize zoom for mobile on load
+    // Optimize zoom for mobile on load
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const isMobile = window.innerWidth < 768;
-            if (isMobile) {
-                // Determine scale to fit: (Screen Width - Padding) / A4 Width (approx 794px)
-                // Using 32px padding assumption (1rem each side + buffer)
-                const fitScale = (window.innerWidth - 32) / 794;
-                // Clamp scale between 0.3 and 0.6 so it's not too tiny or too big
-                setZoom(Math.max(0.3, Math.min(fitScale, 0.6)));
+        const handleResize = () => {
+            // "PC give it 80% and mobile make it 100%"
+            if (window.innerWidth < 768) {
+                setZoom(1.0);
+            } else {
+                setZoom(0.8);
             }
-        }
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     // AI Scoring State
