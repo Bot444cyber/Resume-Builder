@@ -70,7 +70,7 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                 <div className="relative w-full max-w-5xl mx-auto perspective-[1200px] group pb-20">
 
                     {/* The 3D Resume Card */}
-                    <div className="relative w-[300px] sm:w-[500px] h-[400px] sm:h-[650px] mx-auto bg-white rounded-2xl transform-style-3d rotate-x-[20deg] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] dark:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.1)] border-[8px] border-b-0 border-slate-100 dark:border-neutral-900 overflow-hidden transition-all duration-700 hover:rotate-x-[15deg] group-hover:scale-[1.02]">
+                    <div className="relative w-full max-w-[300px] sm:max-w-none sm:w-[500px] h-[400px] sm:h-[650px] mx-auto bg-white rounded-2xl transform-style-3d rotate-x-[20deg] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] dark:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.1)] border-[8px] border-b-0 border-slate-100 dark:border-neutral-900 overflow-hidden transition-all duration-700 hover:rotate-x-[15deg] group-hover:scale-[1.02]">
 
                         {/* Glossy Overlay */}
                         <div className="absolute inset-0 bg-linear-to-b from-white/40 to-transparent z-20 pointer-events-none"></div>
@@ -112,7 +112,7 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                     {/* Floating Intelligence Badges */}
 
                     {/* Badge 1: Tone Analysis (Left) */}
-                    <div className="absolute top-[20%] -left-4 sm:left-[5%] lg:-left-10 bg-white/80 dark:bg-black/80 border border-slate-200 dark:border-white/10 p-4 rounded-xl shadow-xl flex items-center gap-4 backdrop-blur-md animate-float z-30 max-w-[220px] transition-transform hover:scale-105 hover:border-slate-300 text-left">
+                    <div className="absolute top-[20%] left-0 sm:left-[5%] lg:-left-10 bg-white/80 dark:bg-black/80 border border-slate-200 dark:border-white/10 p-4 rounded-xl shadow-xl flex items-center gap-4 backdrop-blur-md animate-float z-30 max-w-[220px] transition-transform hover:scale-105 hover:border-slate-300 text-left scale-90 sm:scale-100 origin-left">
                         <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/10 flex items-center justify-center border border-slate-200 dark:border-white/10 box-border">
                             <Wand2 size={18} className="text-slate-700 dark:text-white" />
                         </div>
@@ -123,7 +123,7 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                     </div>
 
                     {/* Badge 2: Keyword Match (Right) */}
-                    <div className="absolute top-[35%] -right-4 sm:right-[5%] lg:-right-10 bg-white/80 dark:bg-black/80 border border-slate-200 dark:border-white/10 p-4 rounded-xl shadow-xl flex items-center gap-4 backdrop-blur-md animate-float-alt z-30 max-w-[220px] transition-transform hover:scale-105 hover:border-slate-300 text-left">
+                    <div className="absolute top-[35%] right-0 sm:right-[5%] lg:-right-10 bg-white/80 dark:bg-black/80 border border-slate-200 dark:border-white/10 p-4 rounded-xl shadow-xl flex items-center gap-4 backdrop-blur-md animate-float-alt z-30 max-w-[220px] transition-transform hover:scale-105 hover:border-slate-300 text-left scale-90 sm:scale-100 origin-right">
                         <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/10 flex items-center justify-center border border-slate-200 dark:border-white/10 box-border">
                             <Sparkles size={18} className="text-slate-700 dark:text-white" />
                         </div>

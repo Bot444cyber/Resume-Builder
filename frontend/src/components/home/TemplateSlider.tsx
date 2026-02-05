@@ -66,24 +66,37 @@ const TemplateSlider: React.FC<TemplateSliderProps> = ({ onSelect }) => {
                     </button>
 
                     {/* Templates Display */}
-                    <div className="relative overflow-hidden">
-                        <div className="flex items-center justify-center gap-8 py-12 min-h-[650px]">
+                    <div className="relative overflow-hidden pt-8 pb-12">
+                        <div className="flex items-center justify-center gap-4 sm:gap-8 py-4 sm:py-8 min-h-[450px] sm:min-h-[600px] perspective-1000">
                             {SLIDER_TEMPLATES.map((template, idx) => {
-                                const isActive = idx === activeIdx;
-                                const offset = idx - activeIdx;
+                                // Calculate circular offset
+                                let offset = idx - activeIdx;
+                                const len = SLIDER_TEMPLATES.length;
 
-                                // Show only templates within range of -1 to +1
+                                // Handle wrapping
+                                if (offset > len / 2) offset -= len;
+                                if (offset < -len / 2) offset += len;
+
+                                // Show only active and immediate neighbors
                                 if (Math.abs(offset) > 1) return null;
+
+                                const isActive = offset === 0;
+                                const direction = offset > 0 ? 1 : -1;
 
                                 return (
                                     <div
                                         key={template.id}
-                                        className="transition-all duration-700 ease-out flex-shrink-0"
+                                        className="transition-all duration-700 ease-out absolute top-1/2 left-1/2 w-full max-w-[280px] sm:max-w-[320px]"
                                         style={{
-                                            transform: `scale(${isActive ? 1 : 0.85}) translateY(${isActive ? '0px' : '20px'})`,
-                                            opacity: isActive ? 1 : 0.5,
-                                            filter: isActive ? 'none' : 'blur(2px) grayscale(50%)',
-                                            zIndex: isActive ? 10 : 0
+                                            transform: `
+                                                translate(-50%, -50%) 
+                                                translateX(${offset * 110}%) 
+                                                scale(${isActive ? 1 : 0.85}) 
+                                                perspective(1000px) rotateY(${isActive ? 0 : -direction * 15}deg)
+                                            `,
+                                            zIndex: isActive ? 20 : 10,
+                                            opacity: isActive ? 1 : 0.6,
+                                            filter: isActive ? 'none' : 'blur(1px) grayscale(30%)'
                                         }}
                                     >
                                         <div className={`relative transition-all duration-500 group card-shine ${isActive
@@ -92,26 +105,26 @@ const TemplateSlider: React.FC<TemplateSliderProps> = ({ onSelect }) => {
                                             }`}>
 
                                             {/* Template Preview using ResumeThumbnail */}
-                                            <Link href={`/editor?template=${template.id}`} className="block relative overflow-hidden rounded-2xl">
-                                                <div className="transition-transform duration-700 ease-out group-hover:scale-110 scale-[0.75] sm:scale-100">
-                                                    <ResumeThumbnail scale={0.45}>
+                                            <Link href={`/editor?template=${template.id}`} className="block relative overflow-hidden rounded-2xl bg-white">
+                                                <div className="transition-transform duration-700 ease-out group-hover:scale-110 scale-[1] sm:scale-100 origin-top">
+                                                    <ResumeThumbnail scale={0.4}>
                                                         <TemplatePreview templateId={template.id} />
                                                     </ResumeThumbnail>
                                                 </div>
 
                                                 {/* Professional Hover Overlay */}
-                                                <div className={`absolute inset-0 bg-white/90 dark:bg-black/90 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-end pb-12 gap-6 ${!isActive ? 'hidden' : ''}`}>
+                                                <div className={`absolute inset-0 bg-white/90 dark:bg-black/90 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-end pb-8 sm:pb-12 gap-4 sm:gap-6 ${!isActive ? 'hidden' : ''}`}>
 
                                                     {/* Staggered Text */}
-                                                    <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out delay-75 text-center px-6">
-                                                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">{template.name}</h3>
-                                                        <p className="text-slate-600 dark:text-slate-300 font-medium text-lg">{template.category}</p>
+                                                    <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out delay-75 text-center px-4 sm:px-6">
+                                                        <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-1 sm:mb-2 tracking-tight">{template.name}</h3>
+                                                        <p className="text-slate-600 dark:text-slate-300 font-medium text-sm sm:text-lg">{template.category}</p>
                                                     </div>
 
                                                     {/* Feature Pills */}
                                                     <div className="flex gap-2 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out delay-150">
-                                                        <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/20 text-xs font-medium text-slate-700 dark:text-white">ATS Friendly</span>
-                                                        <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/20 text-xs font-medium text-slate-700 dark:text-white">Professional</span>
+                                                        <span className="px-2 sm:px-3 py-1 rounded-full bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/20 text-[10px] sm:text-xs font-medium text-slate-700 dark:text-white">ATS Friendly</span>
+                                                        <span className="px-2 sm:px-3 py-1 rounded-full bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/20 text-[10px] sm:text-xs font-medium text-slate-700 dark:text-white">Professional</span>
                                                     </div>
 
                                                     {/* Action Button */}
@@ -120,10 +133,10 @@ const TemplateSlider: React.FC<TemplateSliderProps> = ({ onSelect }) => {
                                                             e.preventDefault();
                                                             onSelect?.(template.id as TemplateId);
                                                         }}
-                                                        className="transform translate-y-8 group-hover:translate-y-0 transition-all duration-500 ease-out delay-200 bg-black hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-200 text-white dark:text-black font-bold py-4 px-10 rounded-full shadow-lg hover:scale-105 flex items-center gap-2"
+                                                        className="transform translate-y-8 group-hover:translate-y-0 transition-all duration-500 ease-out delay-200 bg-black hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-200 text-white dark:text-black font-bold py-3 sm:py-4 px-8 sm:px-10 rounded-full shadow-lg hover:scale-105 flex items-center gap-2 text-sm sm:text-base"
                                                     >
                                                         Use Template
-                                                        <ChevronRight size={20} />
+                                                        <ChevronRight size={18} />
                                                     </button>
                                                 </div>
                                             </Link>
@@ -134,11 +147,11 @@ const TemplateSlider: React.FC<TemplateSliderProps> = ({ onSelect }) => {
                         </div>
 
                         {/* Template Info Below */}
-                        <div className="text-center mt-6 min-h-[80px]">
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                        <div className="text-center mt-2 sm:mt-6 min-h-[60px] sm:min-h-[80px]">
+                            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mb-1 sm:mb-2">
                                 {SLIDER_TEMPLATES[activeIdx].name}
                             </h3>
-                            <p className="text-sm text-slate-500">
+                            <p className="text-xs sm:text-sm text-slate-500 px-4">
                                 {SLIDER_TEMPLATES[activeIdx].category} • {SLIDER_TEMPLATES[activeIdx].description}
                             </p>
                         </div>

@@ -199,7 +199,11 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
         if (typeof window !== 'undefined') {
             const isMobile = window.innerWidth < 768;
             if (isMobile) {
-                setZoom(0.5);
+                // Determine scale to fit: (Screen Width - Padding) / A4 Width (approx 794px)
+                // Using 32px padding assumption (1rem each side + buffer)
+                const fitScale = (window.innerWidth - 32) / 794;
+                // Clamp scale between 0.3 and 0.6 so it's not too tiny or too big
+                setZoom(Math.max(0.3, Math.min(fitScale, 0.6)));
             }
         }
     }, []);
