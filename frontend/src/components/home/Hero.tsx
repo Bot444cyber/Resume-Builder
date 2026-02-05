@@ -9,6 +9,27 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
     return (
         <section className="relative min-h-[140vh] flex flex-col justify-start pt-32 lg:pt-40 bg-white dark:bg-black overflow-hidden text-slate-900 dark:text-white selection:bg-gray-200 dark:selection:bg-white/20 transition-colors duration-500">
 
+            {/* Noise Texture (Darker Dots) Background - Light Mode Only */}
+            <div
+                className="absolute inset-0 z-0 dark:hidden"
+                style={{
+                    background: "#ffffff",
+                    backgroundImage: "radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.35) 1px, transparent 0)",
+                    backgroundSize: "20px 20px",
+                }}
+            />
+
+            {/* Dark White Dotted Grid Background - Dark Mode Only */}
+            <div
+                className="absolute inset-0 z-0 hidden dark:block"
+                style={{
+                    background: "#000000",
+                    backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.1) 1.5px, transparent 1.5px)`,
+                    backgroundSize: "30px 30px",
+                    backgroundPosition: "0 0",
+                }}
+            />
+
             {/* Dynamic Background */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 {/* Moving Grid - White in Dark Mode, Slate in Light Mode */}
