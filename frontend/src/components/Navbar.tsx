@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowRight, FileText, Briefcase, LayoutTemplate, Sun, Moon } from 'lucide-react';
+import { Menu, X, ArrowRight, FileText, Briefcase, LayoutTemplate, Sun, Moon, Home } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from '../context/ThemeProvider';
@@ -51,9 +51,9 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
 
     // Navigation Data
     const navLinks = [
+        { name: 'Home', href: '/', icon: Home },
         { name: 'Templates', href: '/templates', icon: LayoutTemplate },
         { name: 'AI Analyzer', href: '#', icon: Briefcase },
-        { name: 'Resources', href: '#', icon: FileText },
     ];
 
     const actionLinks = [
