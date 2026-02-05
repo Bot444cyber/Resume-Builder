@@ -422,7 +422,7 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
         <div className={`h-screen flex flex-col md:flex-row bg-white dark:bg-black overflow-hidden ${isDark ? 'dark' : ''}`}>
 
             {/* Mobile Header */}
-            <div className="md:hidden h-14 bg-white dark:bg-black border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-4 shrink-0 z-50">
+            <div className="no-print md:hidden h-14 bg-white dark:bg-black border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-4 shrink-0 z-50">
                 <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 -ml-2 text-slate-900 dark:text-white">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
                 </button>

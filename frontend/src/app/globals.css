@@ -340,7 +340,8 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    transform: none !important; /* CRITICAL: Remove zoom scaling */
+    transform: none !important;
+    /* CRITICAL: Remove zoom scaling */
     box-shadow: none !important;
     border: none !important;
   }
@@ -352,11 +353,14 @@ body {
   }
 
   /* Reset body styles for print */
+  html,
   body {
     margin: 0;
     padding: 0;
     background: white !important;
     overflow: visible !important;
+    height: auto !important;
+    width: auto !important;
   }
 }
 
