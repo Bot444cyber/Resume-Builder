@@ -14,6 +14,9 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "ResumeLeader - Build Your Career with Precision",
   description: "The world's most advanced platform for career branding and resume engineering.",
+  icons: {
+    icon: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -23,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${plusJakarta.variable} antialiased bg-white dark:bg-slate-950 text-slate-900 dark:text-white overflow-x-hidden selection:bg-blue-600 selection:text-white transition-colors duration-300`}>
+      <body className={`${plusJakarta.variable} antialiased bg-white dark:bg-black text-slate-900 dark:text-white overflow-x-hidden selection:bg-blue-600 selection:text-white transition-colors duration-300`}>
         <ThemeProvider>
           <div className="noise-overlay"></div>
           {children}

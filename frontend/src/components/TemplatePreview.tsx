@@ -13,6 +13,7 @@ import { ModernTemplate2 } from './templates/modern/ModernTemplate2';
 import { ModernTemplate3 } from './templates/modern/ModernTemplate3';
 import { ModernTemplate4 } from './templates/modern/ModernTemplate4';
 import { ModernTemplate5 } from './templates/modern/ModernTemplate5';
+import { ModernTemplate6 } from './templates/modern/ModernTemplate6';
 import { ProfessionalTemplate1 } from './templates/professional/ProfessionalTemplate1';
 import { ProfessionalTemplate2 } from './templates/professional/ProfessionalTemplate2';
 import { ProfessionalTemplate3 } from './templates/professional/ProfessionalTemplate3';
@@ -120,6 +121,7 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({ templateId }) 
         case 'modern-3': Component = ModernTemplate3; break;
         case 'modern-4': Component = ModernTemplate4; break;
         case 'modern-5': Component = ModernTemplate5; break;
+        case 'modern-6': Component = ModernTemplate6; break;
         case 'professional-1': Component = ProfessionalTemplate1; break;
         case 'professional-2': Component = ProfessionalTemplate2; break;
         case 'professional-3': Component = ProfessionalTemplate3; break;

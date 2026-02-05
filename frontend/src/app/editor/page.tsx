@@ -16,7 +16,7 @@ function EditorContent() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-900">
+        <div className="min-h-screen bg-slate-50 dark:bg-black transition-colors duration-300">
             {/* Passing the template ID as any for now until we update types, 
            ResumeEditor will default to professional/modern if not found 
            but we'll update ResumeEditor next to handle specific IDs */}

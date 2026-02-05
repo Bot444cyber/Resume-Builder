@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Sparkles, Wand2, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, Sparkles, Wand2, ArrowUpRight, Globe, Code, Briefcase, Award } from 'lucide-react';
 
 interface HeroProps {
     onStart?: () => void;
@@ -7,7 +7,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onStart }) => {
     return (
-        <section className="relative min-h-[140vh] flex flex-col justify-start pt-32 lg:pt-40 bg-white dark:bg-[#020617] overflow-hidden text-slate-900 dark:text-white selection:bg-blue-500/30 transition-colors duration-500">
+        <section className="relative min-h-[140vh] flex flex-col justify-start pt-32 lg:pt-40 bg-white dark:bg-black overflow-hidden text-slate-900 dark:text-white selection:bg-gray-200 dark:selection:bg-white/20 transition-colors duration-500">
 
             {/* Dynamic Background */}
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -15,8 +15,8 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                 <div className="absolute inset-0 bg-grid-slate-200 dark:bg-grid-white bg-[size:50px_50px] opacity-[0.5] dark:opacity-[0.07] [mask-image:linear-gradient(to_bottom,transparent,black_40%,transparent)] animate-grid-move"></div>
 
                 {/* Spotlight / Glows */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-blue-500/10 dark:bg-blue-900/20 rounded-full blur-[120px] mix-blend-screen opacity-60"></div>
-                <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-indigo-500/10 dark:bg-indigo-900/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen"></div>
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-slate-200/50 dark:bg-white/5 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-overlay opacity-60"></div>
+                <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-gray-100/50 dark:bg-white/5 rounded-full blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-overlay"></div>
             </div>
 
             <div className="container mx-auto px-6 lg:px-24 relative z-10 flex flex-col items-center text-center">
@@ -36,7 +36,7 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                 <div className="flex flex-col sm:flex-row items-center gap-4 mb-24 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
                     <button
                         onClick={onStart}
-                        className="w-full sm:w-auto px-10 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold text-lg transition-all shadow-[0_0_40px_-5px_rgba(37,99,235,0.3)] hover:shadow-[0_0_60px_-10px_rgba(37,99,235,0.5)] hover:-translate-y-1"
+                        className="w-full sm:w-auto px-10 py-4 bg-black hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-200 dark:text-black rounded-lg font-bold text-lg transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
                     >
                         Build my CV
                     </button>
@@ -49,7 +49,7 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                 <div className="relative w-full max-w-5xl mx-auto perspective-[1200px] group pb-20">
 
                     {/* The 3D Resume Card */}
-                    <div className="relative w-[300px] sm:w-[500px] h-[400px] sm:h-[650px] mx-auto bg-white rounded-2xl transform-style-3d rotate-x-[20deg] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] dark:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] border-[8px] border-b-0 border-slate-100 dark:border-[#020617] overflow-hidden transition-all duration-700 hover:rotate-x-[15deg] group-hover:scale-[1.02]">
+                    <div className="relative w-[300px] sm:w-[500px] h-[400px] sm:h-[650px] mx-auto bg-white rounded-2xl transform-style-3d rotate-x-[20deg] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] dark:shadow-[0_30px_60px_-15px_rgba(255,255,255,0.1)] border-[8px] border-b-0 border-slate-100 dark:border-neutral-900 overflow-hidden transition-all duration-700 hover:rotate-x-[15deg] group-hover:scale-[1.02]">
 
                         {/* Glossy Overlay */}
                         <div className="absolute inset-0 bg-linear-to-b from-white/40 to-transparent z-20 pointer-events-none"></div>
@@ -59,7 +59,7 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                             <div className="flex justify-between items-start">
                                 <div className="space-y-4 w-2/3">
                                     <h3 className="text-3xl font-bold text-slate-900">Penelope Sterling</h3>
-                                    <div className="text-blue-600 font-medium">Senior Visualizer</div>
+                                    <div className="text-slate-600 font-medium">Senior Visualizer</div>
                                     <p className="text-xs text-slate-500 leading-relaxed">
                                         Innovative visual designer with 7+ years of experience brand identity, digital marketing, and UI/UX design.
                                     </p>
@@ -85,15 +85,15 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                         </div>
 
                         {/* Bottom fade for distinct "cut off" look in 3D */}
-                        <div className="absolute bottom-0 w-full h-40 bg-linear-to-t from-white dark:from-[#020617] via-white/80 dark:via-[#020617]/80 to-transparent z-10"></div>
+                        <div className="absolute bottom-0 w-full h-40 bg-linear-to-t from-white dark:from-black via-white/80 dark:via-black/80 to-transparent z-10"></div>
                     </div>
 
                     {/* Floating Intelligence Badges */}
 
                     {/* Badge 1: Tone Analysis (Left) */}
-                    <div className="absolute top-[20%] -left-4 sm:left-[5%] lg:-left-10 bg-white/80 dark:bg-[#0f111a]/80 border border-blue-500/20 p-4 rounded-xl shadow-xl flex items-center gap-4 backdrop-blur-md animate-float z-30 max-w-[220px] transition-transform hover:scale-105 hover:border-blue-500/40 text-left">
-                        <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 box-border">
-                            <Wand2 size={18} className="text-blue-500 dark:text-blue-400" />
+                    <div className="absolute top-[20%] -left-4 sm:left-[5%] lg:-left-10 bg-white/80 dark:bg-black/80 border border-slate-200 dark:border-white/10 p-4 rounded-xl shadow-xl flex items-center gap-4 backdrop-blur-md animate-float z-30 max-w-[220px] transition-transform hover:scale-105 hover:border-slate-300 text-left">
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/10 flex items-center justify-center border border-slate-200 dark:border-white/10 box-border">
+                            <Wand2 size={18} className="text-slate-700 dark:text-white" />
                         </div>
                         <div className="text-xs">
                             <div className="text-slate-500 dark:text-gray-400 font-medium mb-0.5">Tone Analysis</div>
@@ -102,9 +102,9 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                     </div>
 
                     {/* Badge 2: Keyword Match (Right) */}
-                    <div className="absolute top-[35%] -right-4 sm:right-[5%] lg:-right-10 bg-white/80 dark:bg-[#0f111a]/80 border border-green-500/20 p-4 rounded-xl shadow-xl flex items-center gap-4 backdrop-blur-md animate-float-alt z-30 max-w-[220px] transition-transform hover:scale-105 hover:border-green-500/40 text-left">
-                        <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center border border-green-500/20 box-border">
-                            <Sparkles size={18} className="text-green-600 dark:text-green-400" />
+                    <div className="absolute top-[35%] -right-4 sm:right-[5%] lg:-right-10 bg-white/80 dark:bg-black/80 border border-slate-200 dark:border-white/10 p-4 rounded-xl shadow-xl flex items-center gap-4 backdrop-blur-md animate-float-alt z-30 max-w-[220px] transition-transform hover:scale-105 hover:border-slate-300 text-left">
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/10 flex items-center justify-center border border-slate-200 dark:border-white/10 box-border">
+                            <Sparkles size={18} className="text-slate-700 dark:text-white" />
                         </div>
                         <div className="text-xs">
                             <div className="text-slate-500 dark:text-gray-400 font-medium mb-0.5">Impact Score</div>
@@ -114,10 +114,10 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
 
                     {/* Badge 3: Match Percent (Bottom Center) - glowing visual */}
                     <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-30">
-                        <div className="px-6 py-2 bg-blue-600 rounded-full font-bold text-lg text-white shadow-[0_0_30px_rgba(59,130,246,0.5)] border border-blue-400/50">
+                        <div className="px-6 py-2 bg-black dark:bg-white text-white dark:text-black rounded-full font-bold text-lg shadow-2xl border border-slate-200 dark:border-slate-800">
                             67% Match
                         </div>
-                        <div className="w-[400px] h-[100px] bg-blue-600/20 blur-[80px] rounded-full pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+                        <div className="w-[400px] h-[100px] bg-slate-400/20 blur-[80px] rounded-full pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
                     </div>
 
                 </div>
@@ -125,10 +125,46 @@ const Hero: React.FC<HeroProps> = ({ onStart }) => {
                 {/* Bottom Text/Scroller */}
                 <div className="mt-20 text-center animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 pb-20">
                     <p className="text-slate-400 dark:text-gray-500 text-sm font-medium tracking-widest uppercase mb-8">Trusted by industry leaders</p>
-                    <div className="w-full overflow-hidden opacity-30 grayscale mix-blend-multiply dark:mix-blend-screen">
-                        <div className="flex w-max animate-marquee-right gap-12 items-center">
-                            {[...Array(32)].map((_, i) => (
-                                <div key={i} className="h-6 w-24 bg-slate-400 dark:bg-white rounded flex-shrink-0"></div>
+                    <div className="relative w-full overflow-hidden">
+                        {/* Gradient Masks for Fade Effect */}
+                        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white dark:from-black to-transparent z-10 pointer-events-none"></div>
+                        <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white dark:from-black to-transparent z-10 pointer-events-none"></div>
+
+                        {/* Scrolling Content */}
+                        <div className="flex w-max animate-marquee-right gap-16 items-center hover:[animation-play-state:paused] group">
+                            {/* Original Set */}
+                            {[
+                                { name: "TechGiant", icon: <Globe size={24} /> },
+                                { name: "InnovateLabs", icon: <Sparkles size={24} /> },
+                                { name: "GlobalCorp", icon: <Briefcase size={24} /> },
+                                { name: "DesignStudio", icon: <Wand2 size={24} /> },
+                                { name: "FutureWorks", icon: <ArrowUpRight size={24} /> },
+                                { name: "SmartSystems", icon: <Code size={24} /> },
+                                { name: "AlphaGroup", icon: <Award size={24} /> },
+                                { name: "TechGiant", icon: <Globe size={24} /> },
+                                { name: "InnovateLabs", icon: <Sparkles size={24} /> },
+                                { name: "GlobalCorp", icon: <Briefcase size={24} /> },
+                                { name: "DesignStudio", icon: <Wand2 size={24} /> },
+                                { name: "FutureWorks", icon: <ArrowUpRight size={24} /> },
+                                { name: "SmartSystems", icon: <Code size={24} /> },
+                                { name: "AlphaGroup", icon: <Award size={24} /> },
+                                { name: "TechGiant", icon: <Globe size={24} /> },
+                                { name: "InnovateLabs", icon: <Sparkles size={24} /> },
+                                { name: "GlobalCorp", icon: <Briefcase size={24} /> },
+                                { name: "DesignStudio", icon: <Wand2 size={24} /> },
+                                { name: "FutureWorks", icon: <ArrowUpRight size={24} /> },
+                                { name: "SmartSystems", icon: <Code size={24} /> },
+                                { name: "AlphaGroup", icon: <Award size={24} /> },
+                            ].map((company, i) => (
+                                <div
+                                    key={i}
+                                    className="flex items-center gap-2 group/logo opacity-40 hover:opacity-100 transition-all duration-300 cursor-pointer grayscale hover:grayscale-0 hover:scale-105"
+                                >
+                                    <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 group-hover/logo:text-black dark:group-hover/logo:text-white group-hover/logo:bg-slate-200 dark:group-hover/logo:bg-slate-700 transition-colors">
+                                        {company.icon}
+                                    </div>
+                                    <span className="font-bold text-lg text-slate-500 dark:text-slate-400 group-hover/logo:text-slate-900 dark:group-hover/logo:text-white transition-colors">{company.name}</span>
+                                </div>
                             ))}
                         </div>
                     </div>

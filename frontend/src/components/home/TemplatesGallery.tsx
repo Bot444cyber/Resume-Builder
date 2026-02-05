@@ -48,7 +48,7 @@ const TemplatesGallery: React.FC = () => {
     };
 
     return (
-        <section className="py-24 md:py-32 bg-white dark:bg-slate-950 relative overflow-hidden transition-colors duration-300" id="templates">
+        <section className="py-24 md:py-32 bg-white dark:bg-black relative overflow-hidden transition-colors duration-300" id="templates">
             <div className="hd-glow bottom-0 right-0 opacity-40" />
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16 md:mb-20 text-center md:text-left">
@@ -69,7 +69,7 @@ const TemplatesGallery: React.FC = () => {
                                 placeholder="Search templates..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-14 pr-8 py-4.5 bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:ring-[6px] focus:ring-blue-500/5 focus:border-blue-500/50 transition-all w-full sm:w-80 font-bold text-slate-700 dark:text-white shadow-sm"
+                                className="pl-14 pr-8 py-4.5 bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:ring-[6px] focus:ring-black/5 dark:focus:ring-white/10 focus:border-slate-300 dark:focus:border-slate-600 transition-all w-full sm:w-80 font-bold text-slate-700 dark:text-white shadow-sm"
                             />
                         </div>
                     </div>
@@ -112,7 +112,7 @@ const TemplatesGallery: React.FC = () => {
 
                                 {template.popular && (
                                     <div className="absolute top-5 left-5 px-3 py-1.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-xl shadow-xl z-10 border border-white/50 dark:border-slate-800/50">
-                                        <span className="text-[9px] font-black uppercase tracking-[0.15em] text-blue-600 flex items-center gap-1.5">
+                                        <span className="text-[9px] font-black uppercase tracking-[0.15em] text-black dark:text-white flex items-center gap-1.5">
                                             <Sparkles size={12} /> Trending
                                         </span>
                                     </div>
@@ -129,7 +129,7 @@ const TemplatesGallery: React.FC = () => {
                                         </div>
                                         <div className="w-px h-8 bg-slate-800" />
                                         <div className="flex flex-col items-center gap-1">
-                                            <div className="flex items-center gap-1.5 text-blue-400">
+                                            <div className="flex items-center gap-1.5 text-slate-400">
                                                 <DownloadCloud size={14} />
                                                 <span className="text-sm font-black">{formatNumber(template.downloads)}</span>
                                             </div>
@@ -156,10 +156,10 @@ const TemplatesGallery: React.FC = () => {
 
                             <div className="mt-6 flex justify-between items-center px-2">
                                 <div>
-                                    <h4 className="font-black text-slate-900 dark:text-white text-lg tracking-tight mb-0.5 group-hover:text-blue-600 transition-colors">{template.name}</h4>
+                                    <h4 className="font-black text-slate-900 dark:text-white text-lg tracking-tight mb-0.5 group-hover:text-black dark:group-hover:text-white transition-colors">{template.name}</h4>
                                     <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">{template.category}</p>
                                 </div>
-                                <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-slate-300 dark:text-slate-600 group-hover:text-white group-hover:bg-blue-600 group-hover:border-blue-500 transition-all duration-500">
+                                <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 flex items-center justify-center text-slate-300 dark:text-slate-600 group-hover:text-white group-hover:bg-black dark:group-hover:bg-white dark:group-hover:text-black group-hover:border-slate-900 dark:group-hover:border-white transition-all duration-500">
                                     <ArrowRight size={18} />
                                 </div>
                             </div>
@@ -174,9 +174,10 @@ const TemplatesGallery: React.FC = () => {
                         </div>
                         <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">No designs found.</h3>
                         <p className="text-slate-400 font-semibold mb-8 text-sm">Try a different search query or category filter.</p>
+                        <p className="text-slate-400 font-semibold mb-8 text-sm">Try a different search query or category filter.</p>
                         <button
                             onClick={() => { setActiveCategory('All'); setSearchQuery(''); }}
-                            className="text-blue-600 font-black text-xs uppercase tracking-widest hover:text-slate-900 dark:hover:text-white transition-colors"
+                            className="text-slate-900 dark:text-white font-black text-xs uppercase tracking-widest hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
                         >
                             Clear filters
                         </button>
@@ -188,7 +189,7 @@ const TemplatesGallery: React.FC = () => {
             {selectedTemplate && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 md:p-8 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-300 overflow-hidden">
                     <div
-                        className="relative w-full max-w-6xl max-h-[90vh] bg-white dark:bg-slate-950 rounded-[2rem] md:rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col lg:flex-row animate-in zoom-in-95 duration-400"
+                        className="relative w-full max-w-6xl max-h-[90vh] bg-white dark:bg-black rounded-[2rem] md:rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col lg:flex-row animate-in zoom-in-95 duration-400"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Close Button - Floating on mobile, integrated on desktop */}
@@ -212,9 +213,9 @@ const TemplatesGallery: React.FC = () => {
                         </div>
 
                         {/* Modal - Details Area */}
-                        <div className="w-full lg:w-[26rem] p-8 md:p-10 lg:p-12 flex flex-col bg-white dark:bg-slate-950 overflow-y-auto">
+                        <div className="w-full lg:w-[26rem] p-8 md:p-10 lg:p-12 flex flex-col bg-white dark:bg-black overflow-y-auto">
                             <div className="flex-1">
-                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest mb-6 border border-blue-100 dark:border-blue-900/50">
+                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white text-[10px] font-black uppercase tracking-widest mb-6 border border-slate-200 dark:border-white/20">
                                     <Sparkles size={14} /> Elite Status
                                 </div>
                                 <h3 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tighter mb-4 leading-none">{selectedTemplate.name}</h3>
@@ -238,7 +239,7 @@ const TemplatesGallery: React.FC = () => {
                                 <div className="space-y-4 mb-8">
                                     {['ATS-Optimized structure', 'Recruiter-vetted layout', 'HD Print quality'].map((f) => (
                                         <div key={f} className="flex items-center gap-3 text-slate-600 dark:text-gray-400 font-bold text-sm">
-                                            <Check size={14} className="text-emerald-500" strokeWidth={3} />
+                                            <Check size={14} className="text-slate-900 dark:text-white" strokeWidth={3} />
                                             {f}
                                         </div>
                                     ))}
@@ -246,12 +247,12 @@ const TemplatesGallery: React.FC = () => {
                             </div>
 
                             <div className="mt-auto flex flex-col gap-4">
-                                <button className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-5 rounded-2xl font-black text-base shadow-2xl hover:bg-blue-600 dark:hover:bg-gray-200 transition-all active:scale-95 animate-shimmer">
+                                <button className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-5 rounded-2xl font-black text-base shadow-2xl hover:bg-slate-800 dark:hover:bg-slate-200 transition-all active:scale-95 animate-shimmer">
                                     Build With This Design
                                 </button>
                                 <button
                                     onClick={() => setSelectedTemplate(null)}
-                                    className="w-full lg:hidden bg-white dark:bg-slate-950 text-slate-500 dark:text-gray-400 py-4 rounded-2xl font-black text-sm border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all"
+                                    className="w-full lg:hidden bg-white dark:bg-black text-slate-500 dark:text-gray-400 py-4 rounded-2xl font-black text-sm border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all"
                                 >
                                     Back to Gallery
                                 </button>

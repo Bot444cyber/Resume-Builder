@@ -51,10 +51,10 @@ const ResumeThumbnail: React.FC<ResumeThumbnailProps> = ({
             </div>
 
             {/* Optional: Hover overlay with glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-t from-blue-500/0 via-blue-500/0 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/0 via-gray-900/0 to-gray-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
             {/* Optional: Subtle border glow on hover */}
-            <div className="absolute inset-0 rounded-2xl ring-2 ring-blue-500/0 group-hover:ring-blue-500/30 transition-all duration-500 pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl ring-2 ring-black/0 dark:ring-white/0 group-hover:ring-black/10 dark:group-hover:ring-white/20 transition-all duration-500 pointer-events-none" />
         </div>
     );
 };

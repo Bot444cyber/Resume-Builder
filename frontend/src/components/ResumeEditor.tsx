@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import { Experience, ResumeData, TemplateId, ResumeSection, Education, Skill } from '../types';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Sparkles, ArrowRight } from 'lucide-react';
 import { useTheme } from '../context/ThemeProvider';
 
 // Template Imports
@@ -16,6 +16,7 @@ import { ModernTemplate2 } from './templates/modern/ModernTemplate2';
 import { ModernTemplate3 } from './templates/modern/ModernTemplate3';
 import { ModernTemplate4 } from './templates/modern/ModernTemplate4';
 import { ModernTemplate5 } from './templates/modern/ModernTemplate5';
+import { ModernTemplate6 } from './templates/modern/ModernTemplate6';
 import { ProfessionalTemplate1 } from './templates/professional/ProfessionalTemplate1';
 import { ProfessionalTemplate2 } from './templates/professional/ProfessionalTemplate2';
 import { ProfessionalTemplate3 } from './templates/professional/ProfessionalTemplate3';
@@ -129,6 +130,7 @@ const TEMPLATE_CONFIGS: Record<string, TemplateConfig> = {
     'modern-3': { ...DEFAULT_CONFIG, hasProfileImage: false, hasAddress: true, hasCustomSection: true },
     'modern-4': { ...DEFAULT_CONFIG, hasProfileImage: false, hasAddress: true, hasCustomSection: true },
     'modern-5': { ...DEFAULT_CONFIG, hasProfileImage: false, hasAddress: true, hasCustomSection: true },
+    'modern-6': { ...DEFAULT_CONFIG, hasProfileImage: true, hasAddress: true, hasCustomSection: true },
     // Professional Templates - Have Profile Image
     'professional': { ...DEFAULT_CONFIG, hasProfileImage: true, hasAddress: true, hasCustomSection: true },
     'professional-1': { ...DEFAULT_CONFIG, hasProfileImage: true, hasAddress: true, hasCustomSection: true },
@@ -151,6 +153,7 @@ const TEMPLATE_DEFAULT_COLORS: Record<string, string> = {
     'modern-3': '#059669', // Emerald
     'modern-4': '#7c3aed', // Violet
     'modern-5': '#ea580c', // Orange
+    'modern-6': '#eab308', // Yellow/Gold
     'professional-1': '#4f46e5', // Indigo
     'professional-2': '#9333ea', // Purple
     'professional-3': '#0891b2', // Cyan
@@ -190,6 +193,13 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
     const [activeTab, setActiveTab] = useState<'content' | 'design' | 'ai'>('content');
     const [isAiLoading, setIsAiLoading] = useState(false);
     const [zoom, setZoom] = useState(0.8);
+
+    // AI Scoring State
+    const [aiScore, setAiScore] = useState<{ score: number, feedback: string[] } | null>(null);
+
+    // AI Generator State
+    const [aiJobTitle, setAiJobTitle] = useState('');
+    const [aiJobCompany, setAiJobCompany] = useState('');
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -231,6 +241,94 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
         } catch (err) {
             console.error("AI Generation failed", err);
             alert("AI Generation failed. See console for details.");
+        } finally {
+            setIsAiLoading(false);
+        }
+    };
+
+    const generateResumeScore = async () => {
+        const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+        if (!apiKey) {
+            alert("AI features require an API Key. Please create a .env.local file with NEXT_PUBLIC_GEMINI_API_KEY=your_key");
+            return;
+        }
+
+        setIsAiLoading(true);
+        try {
+            const genAI = new GoogleGenAI({ apiKey });
+            const resumeContext = JSON.stringify({
+                summary: data.summary,
+                experiences: data.experiences,
+                skills: data.skills,
+                education: data.education
+            });
+
+            const prompt = `Analyze this resume content for ATS compatibility and overall impact. 
+            Provide a strict numerical score (0-100) and 3 short, critical, actionable bullet points for improvement.
+            Format response as JSON: { "score": 85, "feedback": ["Fix X", "Improve Y", "Add Z"] }
+            Resume Data: ${resumeContext}`;
+
+            const response = await genAI.models.generateContent({
+                model: 'gemini-2.0-flash',
+                contents: prompt,
+                config: { responseMimeType: "application/json" }
+            });
+
+            if (response.text) {
+                const result = JSON.parse(response.text);
+                setAiScore(result);
+            }
+        } catch (err) {
+            console.error("AI Scoring failed", err);
+            alert("Analysis failed. Please try again.");
+        } finally {
+            setIsAiLoading(false);
+        }
+    };
+
+    const generateExperienceEntry = async () => {
+        if (!aiJobTitle || !aiJobCompany) {
+            alert("Please enter a job title and company.");
+            return;
+        }
+        const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+        if (!apiKey) {
+            alert("AI features require an API Key.");
+            return;
+        }
+
+        setIsAiLoading(true);
+        try {
+            const genAI = new GoogleGenAI({ apiKey });
+            const prompt = `Generate a professional resume experience entry for a "${aiJobTitle}" role at "${aiJobCompany}". 
+            Include 3-4 impactful bullet points using strong action verbs and metrics. 
+            Return ONLY the text content for the description.`;
+
+            const response = await genAI.models.generateContent({
+                model: 'gemini-2.0-flash',
+                contents: prompt,
+            });
+
+            if (response.text) {
+                const newExp: Experience = {
+                    id: Date.now().toString(),
+                    company: aiJobCompany,
+                    role: aiJobTitle,
+                    dates: '2023 - Present',
+                    desc: response.text.trim()
+                };
+                setData(prev => ({
+                    ...prev,
+                    experiences: [newExp, ...prev.experiences]
+                }));
+                // Reset fields
+                setAiJobTitle('');
+                setAiJobCompany('');
+                setActiveTab('content'); // Switch to content to show the new entry
+            }
+        } catch (err) {
+            console.error("AI Generation failed", err);
+            alert("Generation failed. Please try again.");
         } finally {
             setIsAiLoading(false);
         }
@@ -289,6 +387,7 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
             case 'modern-3': return <ModernTemplate3 {...props} />;
             case 'modern-4': return <ModernTemplate4 {...props} />;
             case 'modern-5': return <ModernTemplate5 {...props} />;
+            case 'modern-6': return <ModernTemplate6 {...props} />;
             case 'professional-1': return <ProfessionalTemplate1 {...props} />;
             case 'professional-2': return <ProfessionalTemplate2 {...props} />;
             case 'professional-3': return <ProfessionalTemplate3 {...props} />;
@@ -299,21 +398,21 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
         }
     };
 
-    const labelClasses = "block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5";
-    const inputClasses = "w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs md:text-sm text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm";
+    const labelClasses = "block text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mb-2";
+    const inputClasses = "w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2.5 text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-slate-900 dark:focus:ring-white focus:border-slate-900 dark:focus:border-white transition-all shadow-sm placeholder:text-slate-300 dark:placeholder:text-slate-600";
 
     // Detect mobile for sidebar behavior
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     return (
-        <div className={`h-screen flex flex-col md:flex-row bg-slate-50 dark:bg-slate-950 overflow-hidden ${isDark ? 'dark' : ''}`}>
+        <div className={`h-screen flex flex-col md:flex-row bg-white dark:bg-black overflow-hidden ${isDark ? 'dark' : ''}`}>
 
             {/* Mobile Header */}
-            <div className="md:hidden h-14 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 shrink-0 z-50">
-                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 -ml-2 text-slate-600 dark:text-slate-400">
+            <div className="md:hidden h-14 bg-white dark:bg-black border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-4 shrink-0 z-50">
+                <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 -ml-2 text-slate-900 dark:text-white">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
                 </button>
-                <h1 className="font-bold text-slate-900 dark:text-white text-sm">Resume Builder</h1>
+                <h1 className="font-black text-slate-900 dark:text-white text-sm tracking-tight">RESUME BUILDER</h1>
                 <button onClick={onBack} className="text-xs font-bold text-slate-500">Back</button>
             </div>
 
@@ -325,19 +424,19 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                     no-print
                     fixed md:relative inset-y-0 left-0 z-40
                     w-full sm:w-[380px] md:w-[420px] 
-                    bg-white dark:bg-slate-900 
-                    border-r border-slate-200 dark:border-slate-800 
+                    bg-white dark:bg-black 
+                    border-r border-slate-100 dark:border-slate-800 
                     flex flex-col shrink-0 
-                    shadow-[4px_0_24px_-12px_rgba(0,0,0,0.1)] 
+                    shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] 
                     transition-transform duration-300 ease-in-out
                     ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
                 `}>
                     {/* Mobile Close Button */}
-                    <div className="md:hidden flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800">
-                        <span className="font-bold text-slate-900 dark:text-white">Edit Resume</span>
+                    <div className="md:hidden flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800">
+                        <span className="font-black text-slate-900 dark:text-white uppercase tracking-wider text-xs">Edit Resume</span>
                         <button
                             onClick={() => setIsSidebarOpen(false)}
-                            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400"
+                            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-900 dark:text-white"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -346,27 +445,27 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                     </div>
 
                     {/* Sidebar Tabs */}
-                    <div className="flex border-b border-slate-100 dark:border-slate-800 p-2 gap-1 bg-white dark:bg-slate-900">
-                        <button onClick={() => setActiveTab('content')} className={`flex-1 py-2 text-[10px] md:text-xs font-black uppercase tracking-wider rounded-lg transition-all ${activeTab === 'content' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>Content</button>
-                        <button onClick={() => setActiveTab('design')} className={`flex-1 py-2 text-[10px] md:text-xs font-black uppercase tracking-wider rounded-lg transition-all ${activeTab === 'design' ? 'bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>Design</button>
-                        <button onClick={() => setActiveTab('ai')} className={`flex-1 py-2 text-[10px] md:text-xs font-black uppercase tracking-wider rounded-lg transition-all ${activeTab === 'ai' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>AI</button>
+                    <div className="flex border-b border-slate-100 dark:border-slate-800 p-3 gap-2 bg-white dark:bg-black">
+                        <button onClick={() => setActiveTab('content')} className={`flex-1 py-2.5 text-[10px] md:text-xs font-bold uppercase tracking-widest rounded-lg transition-all border ${activeTab === 'content' ? 'bg-slate-900 dark:bg-white text-white dark:text-black border-slate-900 dark:border-white shadow-md' : 'bg-white dark:bg-black text-slate-500 border-transparent hover:bg-slate-50 dark:hover:bg-slate-900'}`}>Content</button>
+                        <button onClick={() => setActiveTab('design')} className={`flex-1 py-2.5 text-[10px] md:text-xs font-bold uppercase tracking-widest rounded-lg transition-all border ${activeTab === 'design' ? 'bg-slate-900 dark:bg-white text-white dark:text-black border-slate-900 dark:border-white shadow-md' : 'bg-white dark:bg-black text-slate-500 border-transparent hover:bg-slate-50 dark:hover:bg-slate-900'}`}>Design</button>
+                        <button onClick={() => setActiveTab('ai')} className={`flex-1 py-2.5 text-[10px] md:text-xs font-bold uppercase tracking-widest rounded-lg transition-all border ${activeTab === 'ai' ? 'bg-slate-900 dark:bg-white text-white dark:text-black border-slate-900 dark:border-white shadow-md' : 'bg-white dark:bg-black text-slate-500 border-transparent hover:bg-slate-50 dark:hover:bg-slate-900'}`}>AI</button>
                     </div>
 
                     {/* Sidebar Content */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
                         {activeTab === 'content' && (
-                            <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-left-4 duration-300">
+                            <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-500 ease-out">
                                 {/* Personal Info */}
-                                <section className="space-y-3 md:space-y-4">
-                                    <h3 className="text-xs md:text-sm font-black text-slate-900 dark:text-white border-l-4 border-blue-500 pl-3">Personal Details</h3>
-                                    <div className="grid grid-cols-1 gap-3 md:gap-4">
+                                <section className="space-y-5">
+                                    <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">Personal Details</h3>
+                                    <div className="grid grid-cols-1 gap-4">
                                         {currentConfig.hasProfileImage && (
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100 border border-slate-200">
+                                            <div className="flex items-center gap-5">
+                                                <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-50 border border-slate-200 dark:bg-slate-800 dark:border-slate-700">
                                                     {data.profileImage ? (
                                                         <img src={data.profileImage} alt="Profile" className="w-full h-full object-cover" />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">No Img</div>
+                                                        <div className="w-full h-full flex items-center justify-center text-slate-300 text-[10px] uppercase font-bold">No Photo</div>
                                                     )}
                                                 </div>
                                                 <div className="flex-1">
@@ -375,14 +474,14 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                                                         type="file"
                                                         accept="image/*"
                                                         onChange={handleImageUpload}
-                                                        className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-slate-800 dark:file:text-blue-400"
+                                                        className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-wider file:bg-slate-900 file:text-white hover:file:bg-black transition-all cursor-pointer"
                                                     />
                                                 </div>
                                             </div>
                                         )}
                                         <div><label className={labelClasses}>Full Name</label><input className={inputClasses} value={data.name} onChange={e => setData({ ...data, name: e.target.value })} /></div>
                                         <div><label className={labelClasses}>Job Title</label><input className={inputClasses} value={data.title} onChange={e => setData({ ...data, title: e.target.value })} /></div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div><label className={labelClasses}>Email</label><input className={inputClasses} value={data.email} onChange={e => setData({ ...data, email: e.target.value })} /></div>
                                             <div><label className={labelClasses}>Phone</label><input className={inputClasses} value={data.phone} onChange={e => setData({ ...data, phone: e.target.value })} /></div>
                                         </div>
@@ -394,37 +493,43 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
 
                                 {/* Summary */}
                                 {currentConfig.hasSummary && (
-                                    <section className="space-y-3 md:space-y-4">
+                                    <section className="space-y-4">
                                         <div className="flex justify-between items-center">
-                                            <h3 className="text-xs md:text-sm font-black text-slate-900 dark:text-white border-l-4 border-blue-500 pl-3">
+                                            <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">
                                                 {data.sectionTitles?.summary || 'Summary'}
                                             </h3>
-                                            <button onClick={() => rewriteWithAi('summary')} className="text-[9px] md:text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline uppercase flex items-center gap-1">✨ AI</button>
+                                            <button onClick={() => rewriteWithAi('summary')} className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all text-xs font-bold flex items-center gap-1.5 group">
+                                                <Sparkles size={12} />
+                                                <span className="text-[10px] uppercase tracking-wider">Rewrite</span>
+                                            </button>
                                         </div>
-                                        <textarea rows={5} className={inputClasses} value={data.summary} onChange={e => setData({ ...data, summary: e.target.value })} />
+                                        <textarea rows={5} className={`${inputClasses} resize-none`} value={data.summary} onChange={e => setData({ ...data, summary: e.target.value })} />
                                     </section>
                                 )}
 
                                 {/* Experience */}
                                 {currentConfig.hasExperience && (
-                                    <section className="space-y-3 md:space-y-4">
-                                        <h3 className="text-xs md:text-sm font-black text-slate-900 dark:text-white border-l-4 border-blue-500 pl-3">
+                                    <section className="space-y-4">
+                                        <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">
                                             {data.sectionTitles?.experience || 'Experience'}
                                         </h3>
-                                        <div className="space-y-3 md:space-y-4">
+                                        <div className="space-y-4">
                                             {data.experiences?.map(exp => (
-                                                <div key={exp.id} className="p-3 md:p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 group hover:border-blue-200 dark:hover:border-blue-800 transition-colors">
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                                                <div key={exp.id} className="p-5 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-sm">
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                                         <div><label className={labelClasses}>Company</label><input className={inputClasses} value={exp.company} onChange={e => updateExp(exp.id, 'company', e.target.value)} /></div>
                                                         <div><label className={labelClasses}>Dates</label><input className={inputClasses} value={exp.dates} onChange={e => updateExp(exp.id, 'dates', e.target.value)} /></div>
                                                     </div>
-                                                    <div className="mb-3"><label className={labelClasses}>Role</label><input className={inputClasses} value={exp.role} onChange={e => updateExp(exp.id, 'role', e.target.value)} /></div>
+                                                    <div className="mb-4"><label className={labelClasses}>Role</label><input className={inputClasses} value={exp.role} onChange={e => updateExp(exp.id, 'role', e.target.value)} /></div>
                                                     <div>
-                                                        <div className="flex justify-between mb-1.5">
+                                                        <div className="flex justify-between mb-2">
                                                             <label className={labelClasses}>Description</label>
-                                                            <button onClick={() => rewriteWithAi('desc', exp.id)} className="text-[9px] md:text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline uppercase">✨ AI</button>
+                                                            <button onClick={() => rewriteWithAi('desc', exp.id)} className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all text-xs font-bold flex items-center gap-1.5 group">
+                                                                <Sparkles size={12} />
+                                                                <span className="text-[10px] uppercase tracking-wider">Rewrite</span>
+                                                            </button>
                                                         </div>
-                                                        <textarea rows={3} className={inputClasses} value={exp.desc} onChange={e => updateExp(exp.id, 'desc', e.target.value)} />
+                                                        <textarea rows={4} className={`${inputClasses} resize-none`} value={exp.desc} onChange={e => updateExp(exp.id, 'desc', e.target.value)} />
                                                     </div>
                                                 </div>
                                             ))}
@@ -434,25 +539,25 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
 
                                 {/* Skills */}
                                 {currentConfig.hasSkills && (
-                                    <section className="space-y-3 md:space-y-4 pb-6">
-                                        <h3 className="text-xs md:text-sm font-black text-slate-900 dark:text-white border-l-4 border-blue-500 pl-3">
+                                    <section className="space-y-4 pb-4">
+                                        <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">
                                             {data.sectionTitles?.skills || 'Skills'}
                                         </h3>
-                                        <textarea rows={3} className={inputClasses} value={data.skills} onChange={e => setData({ ...data, skills: e.target.value })} placeholder="Comma separated skills..." />
+                                        <textarea rows={3} className={`${inputClasses} resize-none`} value={data.skills} onChange={e => setData({ ...data, skills: e.target.value })} placeholder="Comma separated skills..." />
                                     </section>
                                 )}
 
                                 {/* Education */}
                                 {currentConfig.hasEducation && (
-                                    <section className="space-y-3 md:space-y-4 pb-6">
-                                        <h3 className="text-xs md:text-sm font-black text-slate-900 dark:text-white border-l-4 border-blue-500 pl-3">
+                                    <section className="space-y-4 pb-4">
+                                        <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">
                                             {data.sectionTitles?.education || 'Education'}
                                         </h3>
-                                        <div className="space-y-3 md:space-y-4">
+                                        <div className="space-y-4">
                                             {data.education?.map(edu => (
-                                                <div key={edu.id} className="p-3 md:p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 group hover:border-blue-200 dark:hover:border-blue-800 transition-colors">
-                                                    <div className="mb-3"><label className={labelClasses}>School</label><input className={inputClasses} value={edu.school} onChange={e => updateEdu(edu.id, 'school', e.target.value)} /></div>
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                                                <div key={edu.id} className="p-5 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50 hover:border-slate-300 dark:hover:border-slate-700 transition-all shadow-sm">
+                                                    <div className="mb-4"><label className={labelClasses}>School</label><input className={inputClasses} value={edu.school} onChange={e => updateEdu(edu.id, 'school', e.target.value)} /></div>
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                                         <div><label className={labelClasses}>Degree</label><input className={inputClasses} value={edu.degree} onChange={e => updateEdu(edu.id, 'degree', e.target.value)} /></div>
                                                         <div><label className={labelClasses}>Dates</label><input className={inputClasses} value={edu.dates} onChange={e => updateEdu(edu.id, 'dates', e.target.value)} /></div>
                                                     </div>
@@ -464,25 +569,25 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
 
                                 {/* Custom Section */}
                                 {currentConfig.hasCustomSection && (
-                                    <section className="space-y-3 md:space-y-4 pb-6">
-                                        <h3 className="text-xs md:text-sm font-black text-slate-900 dark:text-white border-l-4 border-blue-500 pl-3">
+                                    <section className="space-y-4 pb-8">
+                                        <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">
                                             Custom Section
                                         </h3>
                                         <div><label className={labelClasses}>Section Title</label><input className={inputClasses} value={data.customSectionTitle || ''} onChange={e => setData({ ...data, customSectionTitle: e.target.value })} placeholder="e.g. Professional Skills" /></div>
-                                        <div><label className={labelClasses}>Content</label><textarea rows={5} className={inputClasses} value={data.customSectionContent || ''} onChange={e => setData({ ...data, customSectionContent: e.target.value })} placeholder="Content..." /></div>
+                                        <div className="mt-4"><label className={labelClasses}>Content</label><textarea rows={5} className={`${inputClasses} resize-none`} value={data.customSectionContent || ''} onChange={e => setData({ ...data, customSectionContent: e.target.value })} placeholder="Content..." /></div>
                                     </section>
                                 )}
                             </div>
                         )}
 
                         {activeTab === 'design' && (
-                            <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-300">
-                                <section className="space-y-4">
-                                    <h3 className="text-xs md:text-sm font-black text-slate-900 dark:text-white border-l-4 border-blue-500 pl-3">Accent Color</h3>
+                            <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-500">
+                                <section className="space-y-5">
+                                    <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">Accent Color</h3>
                                     <div className="space-y-6">
                                         {Object.entries(COLOR_PALETTES).map(([category, colors]) => (
                                             <div key={category}>
-                                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3 ml-1">{category}</h4>
+                                                <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-3">{category}</h4>
                                                 <div className="grid grid-cols-6 gap-3">
                                                     {colors.map(color => (
                                                         <button
@@ -498,10 +603,10 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                                         ))}
                                     </div>
 
-                                    <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
-                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-3 ml-1">Custom Color</h4>
+                                    <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
+                                        <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-3">Custom Color</h4>
                                         <div className="flex items-center gap-3">
-                                            <div className="relative h-10 w-full rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm cursor-pointer group">
+                                            <div className="relative h-11 w-full rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm cursor-pointer group hover:border-slate-300 transition-colors">
                                                 <input
                                                     type="color"
                                                     value={data.accentColor}
@@ -512,15 +617,15 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                                                     className="w-full h-full flex items-center justify-center font-bold text-white text-xs shadow-inner"
                                                     style={{ backgroundColor: data.accentColor }}
                                                 >
-                                                    Pick Color
+                                                    Tap to Pick
                                                 </div>
                                             </div>
-                                            <div className="relative w-28 shrink-0">
+                                            <div className="relative w-32 shrink-0">
                                                 <input
                                                     type="text"
                                                     value={data.accentColor}
                                                     onChange={(e) => setData({ ...data, accentColor: e.target.value })}
-                                                    className="w-full h-10 pl-3 pr-2 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg text-xs font-mono font-medium text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-blue-500 outline-none uppercase"
+                                                    className={`${inputClasses} font-mono uppercase text-center`}
                                                     placeholder="#000000"
                                                     maxLength={7}
                                                 />
@@ -530,46 +635,136 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                                 </section>
 
                                 <section className="space-y-4">
-                                    <h3 className="text-xs md:text-sm font-black text-slate-900 dark:text-white border-l-4 border-blue-500 pl-3">Layout</h3>
+                                    <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">Layout</h3>
                                     {/* Layout controls can go here */}
-                                    <p className="text-xs text-slate-500">More design controls coming soon.</p>
+                                    <div className="p-4 bg-slate-50 dark:bg-slate-900 rounded-lg text-center">
+                                        <p className="text-xs text-slate-500 font-bold">More controls coming soon</p>
+                                    </div>
                                 </section>
                             </div>
                         )}
 
                         {activeTab === 'ai' && (
-                            <div className="space-y-6 text-center py-10 animate-in fade-in slide-in-from-left-4 duration-300">
-                                <div className="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-2xl mb-4">
-                                    <h3 className="font-bold text-emerald-700 dark:text-emerald-400 mb-2">Resume AI Assistant</h3>
-                                    <p className="text-xs text-emerald-600 dark:text-emerald-300">Use the ✨ AI buttons next to text fields to auto-improve your content.</p>
-                                </div>
+                            <div className="space-y-8 py-6 animate-in fade-in slide-in-from-left-4 duration-500">
+                                {/* Resume Scoring */}
+                                <section className="space-y-4">
+                                    <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">
+                                        Resume Score
+                                    </h3>
+                                    <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-6 border border-slate-100 dark:border-slate-800 text-center">
+                                        {aiScore ? (
+                                            <div className="animate-in zoom-in duration-300">
+                                                <div className="relative w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+                                                    <svg className="w-full h-full transform -rotate-90">
+                                                        <circle cx="48" cy="48" r="40" className="stroke-slate-200 dark:stroke-slate-800" strokeWidth="8" fill="none" />
+                                                        <circle
+                                                            cx="48" cy="48" r="40"
+                                                            className={`stroke-current ${aiScore.score >= 80 ? 'text-emerald-500' : aiScore.score >= 60 ? 'text-yellow-500' : 'text-red-500'}`}
+                                                            strokeWidth="8"
+                                                            fill="none"
+                                                            strokeDasharray="251.2"
+                                                            strokeDashoffset={251.2 - (251.2 * aiScore.score) / 100}
+                                                            strokeLinecap="round"
+                                                        />
+                                                    </svg>
+                                                    <span className="absolute text-2xl font-black text-slate-900 dark:text-white">{aiScore.score}</span>
+                                                </div>
+                                                <div className="text-left space-y-2 mb-6">
+                                                    {aiScore.feedback.map((item, i) => (
+                                                        <div key={i} className="flex gap-2 text-xs text-slate-600 dark:text-slate-300">
+                                                            <span className="text-red-500 font-bold">•</span>
+                                                            {item}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <button onClick={generateResumeScore} className="text-xs font-bold underline text-slate-500 hover:text-slate-900 dark:hover:text-white">
+                                                    Re-Analyze
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <div className="w-12 h-12 bg-slate-200 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                    <Sparkles size={20} className="text-slate-900 dark:text-white" />
+                                                </div>
+                                                <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-2">Check Acceptance Rate</h4>
+                                                <p className="text-[10px] text-slate-500 dark:text-slate-400 mb-4 px-4">
+                                                    Get an instant analysis of your resume with a 0-100 score and actionable feedback.
+                                                </p>
+                                                <button
+                                                    onClick={generateResumeScore}
+                                                    className="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-black rounded-lg text-xs font-bold uppercase tracking-wider hover:scale-105 active:scale-95 transition-all shadow-lg"
+                                                >
+                                                    Analyze Resume
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </section>
+
+                                {/* Content Generator */}
+                                <section className="space-y-4">
+                                    <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">
+                                        Content Generator
+                                    </h3>
+                                    <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-5 border border-slate-100 dark:border-slate-800 space-y-4">
+                                        <div>
+                                            <label className={labelClasses}>Target Job Title</label>
+                                            <input
+                                                className={inputClasses}
+                                                value={aiJobTitle}
+                                                onChange={(e) => setAiJobTitle(e.target.value)}
+                                                placeholder="e.g. Senior Product Manager"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={labelClasses}>Company Name</label>
+                                            <input
+                                                className={inputClasses}
+                                                value={aiJobCompany}
+                                                onChange={(e) => setAiJobCompany(e.target.value)}
+                                                placeholder="e.g. Google"
+                                            />
+                                        </div>
+                                        <button
+                                            onClick={generateExperienceEntry}
+                                            disabled={!aiJobTitle || !aiJobCompany}
+                                            className="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-black rounded-lg text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            Generate Entry
+                                        </button>
+                                        <p className="text-[10px] text-slate-400 text-center">
+                                            Generates a new experience block with professional bullet points.
+                                        </p>
+                                    </div>
+                                </section>
                             </div>
                         )}
                     </div>
                 </div>
 
                 {/* Right Side - Preview */}
-                <div className="flex-1 bg-slate-200/50 dark:bg-slate-950 overflow-hidden relative flex flex-col">
+                <div className="flex-1 bg-slate-100 dark:bg-[#0a0a0a] overflow-hidden relative flex flex-col">
                     {/* Toolbar */}
-                    <div className="h-12 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 shrink-0 no-print z-10">
-                        <div className="flex items-center gap-2">
-                            <button onClick={() => setZoom(z => Math.max(0.4, z - 0.1))} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500">-</button>
-                            <span className="text-xs font-bold w-12 text-center text-slate-600 dark:text-slate-400">{Math.round(zoom * 100)}%</span>
-                            <button onClick={() => setZoom(z => Math.min(2, z + 0.1))} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-500">+</button>
+                    <div className="h-16 bg-white dark:bg-black border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-6 shrink-0 no-print z-10 shadow-sm">
+                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg">
+                            <button onClick={() => setZoom(z => Math.max(0.4, z - 0.1))} className="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 rounded-md text-slate-600 dark:text-slate-300 transition-all font-bold">-</button>
+                            <span className="text-xs font-black w-10 text-center text-slate-900 dark:text-white select-none">{Math.round(zoom * 100)}%</span>
+                            <button onClick={() => setZoom(z => Math.min(2, z + 0.1))} className="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 rounded-md text-slate-600 dark:text-slate-300 transition-all font-bold">+</button>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <button onClick={toggleTheme} className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
-                                {isDark ? <Sun size={18} /> : <Moon size={18} />}
+                        <div className="flex items-center gap-4">
+                            <button onClick={toggleTheme} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-900 dark:text-white transition-all">
+                                {isDark ? <Sun size={20} /> : <Moon size={20} />}
                             </button>
-                            <button onClick={() => window.print()} className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-1.5 rounded-lg text-xs font-bold hover:opacity-90 transition-opacity flex items-center gap-2">
-                                <span>Download PDF</span>
+                            <button onClick={() => window.print()} className="bg-slate-900 dark:bg-white text-white dark:text-black pl-5 pr-6 py-2.5 rounded-full text-xs font-black hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 uppercase tracking-wider">
+                                <ArrowRight size={14} className="rotate-[-45deg]" />
+                                <span>Export PDF</span>
                             </button>
                         </div>
                     </div>
 
                     {/* Preview Area */}
-                    <div className="flex-1 overflow-auto custom-scrollbar p-8 flex items-start justify-center">
-                        <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }} className="shadow-2xl transition-transform duration-200 ease-out origin-top print-area">
+                    <div className="flex-1 overflow-auto custom-scrollbar p-8 lg:p-12 flex items-start justify-center bg-slate-100 dark:bg-[#0a0a0a]">
+                        <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }} className="shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] dark:shadow-none dark:border dark:border-slate-800 transition-transform duration-300 ease-out origin-top print-area bg-white text-left">
                             {renderTemplate()}
                         </div>
                     </div>
@@ -577,10 +772,11 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
             </div>
 
             {isAiLoading && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center backdrop-blur-sm">
-                    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl flex flex-col items-center shadow-2xl">
-                        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-3"></div>
-                        <p className="font-bold text-slate-800 dark:text-white">Generating...</p>
+                <div className="fixed inset-0 bg-white/80 dark:bg-black/80 z-50 flex items-center justify-center backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-white dark:bg-black p-8 rounded-3xl flex flex-col items-center shadow-2xl border border-slate-100 dark:border-slate-800 max-w-sm text-center">
+                        <div className="w-12 h-12 border-4 border-slate-900 dark:border-white border-t-transparent rounded-full animate-spin mb-6"></div>
+                        <h3 className="font-black text-xl text-slate-900 dark:text-white mb-2">Refining Content</h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">Our AI is polishing your text to professional standards...</p>
                     </div>
                 </div>
             )}

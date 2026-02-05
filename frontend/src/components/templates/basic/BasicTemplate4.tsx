@@ -16,7 +16,7 @@ export const BasicTemplate4: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
             {/* Header */}
             <header className="border-b-2 border-slate-200 pb-6 mb-8 flex justify-between items-end">
                 <div>
-                    <h1 className="text-4xl font-bold uppercase tracking-tight text-slate-900 mb-1">
+                    <h1 className="text-4xl font-bold uppercase tracking-tight mb-1" style={{ color: data.accentColor }}>
                         <EditableItem value={data.name} onChange={(val) => onUpdate('name', val)} />
                     </h1>
                     <p className="text-lg text-slate-500 font-medium">
@@ -35,7 +35,7 @@ export const BasicTemplate4: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                 {/* Left Column */}
                 <div className="col-span-8 space-y-8">
                     <section>
-                        <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">
+                        <h2 className="text-xs font-black uppercase tracking-widest mb-4" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.summary || 'Profile'} onChange={(val) => onTitleUpdate('summary', val)} />
                         </h2>
                         <div className="leading-relaxed text-slate-600">
@@ -44,7 +44,7 @@ export const BasicTemplate4: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                     </section>
 
                     <section>
-                        <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">
+                        <h2 className="text-xs font-black uppercase tracking-widest mb-6" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.experience || 'Experience'} onChange={(val) => onTitleUpdate('experience', val)} />
                         </h2>
                         <div className="space-y-6">
@@ -73,7 +73,7 @@ export const BasicTemplate4: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                 {/* Right Column */}
                 <div className="col-span-4 border-l border-slate-100 pl-8 space-y-8">
                     <section>
-                        <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">
+                        <h2 className="text-xs font-black uppercase tracking-widest mb-4" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.skills || 'Skills'} onChange={(val) => onTitleUpdate('skills', val)} />
                         </h2>
                         <div className="flex flex-col gap-2 text-slate-600 font-medium">
@@ -82,7 +82,7 @@ export const BasicTemplate4: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                     </section>
 
                     <section>
-                        <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">
+                        <h2 className="text-xs font-black uppercase tracking-widest mb-4" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.education || 'Education'} onChange={(val) => onTitleUpdate('education', val)} />
                         </h2>
                         <div className="space-y-4 text-slate-600">

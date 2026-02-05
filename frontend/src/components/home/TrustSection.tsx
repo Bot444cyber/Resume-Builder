@@ -2,7 +2,7 @@ import React from 'react';
 
 const TrustSection: React.FC = () => {
     return (
-        <section className="py-24 px-6 lg:px-24 bg-white dark:bg-slate-950 overflow-hidden border-b border-gray-50 dark:border-slate-800 transition-colors duration-300">
+        <section className="py-24 px-6 lg:px-24 bg-white dark:bg-black overflow-hidden border-b border-gray-50 dark:border-slate-800 transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
                 <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
                     {/* Left Content */}
@@ -32,7 +32,7 @@ const TrustSection: React.FC = () => {
                         </div>
 
                         <p className="text-xl text-slate-600 dark:text-slate-400 font-medium mb-3 leading-relaxed max-w-lg">
-                            "LiveCareer customers got the job on average <span className="text-blue-600 dark:text-blue-400 font-bold">48 days faster</span> than candidates without a professional CV."
+                            "LiveCareer customers got the job on average <span className="text-slate-900 dark:text-white font-bold">48 days faster</span> than candidates without a professional CV."
                         </p>
                         <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">
                             *based on a survey of 258 LiveCareer users
@@ -43,19 +43,34 @@ const TrustSection: React.FC = () => {
                     <div className="relative">
                         {/* Decorative Swooshes */}
                         <div className="absolute -inset-10 z-0 pointer-events-none opacity-50">
-                            <div className="absolute top-[10%] right-[0%] w-[40%] h-[70%] bg-blue-100 dark:bg-blue-900/30 rounded-full blur-[60px] opacity-60 transform rotate-[15deg]"></div>
-                            <div className="absolute bottom-[0%] left-[10%] w-[60%] h-[40%] bg-purple-100 dark:bg-purple-900/30 rounded-full blur-[80px] opacity-40"></div>
+                            <div className="absolute top-[10%] right-[0%] w-[40%] h-[70%] bg-slate-200/50 dark:bg-white/5 rounded-full blur-[60px] opacity-60 transform rotate-[15deg]"></div>
+                            <div className="absolute bottom-[0%] left-[10%] w-[60%] h-[40%] bg-gray-200/50 dark:bg-white/5 rounded-full blur-[80px] opacity-40"></div>
                         </div>
 
-                        {/* Grid of Users */}
-                        <div className="grid grid-cols-4 gap-3 relative z-10">
-                            {[...Array(12)].map((_, i) => (
-                                <div key={i} className={`aspect-square rounded-2xl overflow-hidden shadow-md transition-all duration-500 hover:scale-110 hover:shadow-xl hover:z-20 border-2 border-white dark:border-slate-800 ${i % 3 === 0 ? 'translate-y-4' : ''
+                        {/* Grid of Users - Professional Masonry Layout */}
+                        <div className="grid grid-cols-4 gap-4 relative z-10 perspective-1000">
+                            {[
+                                "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1619895862022-09114b41f16f?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=200&h=200&q=80",
+                                "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?auto=format&fit=crop&w=200&h=200&q=80"
+                            ].map((imgUrl, i) => (
+                                <div key={i} className={`group relative aspect-square rounded-2xl overflow-hidden shadow-lg border-2 border-white dark:border-slate-800 transition-all duration-500 ease-out hover:scale-110 hover:shadow-2xl hover:z-20 hover:border-slate-300 dark:hover:border-slate-600 ${i % 2 === 0 ? 'translate-y-6' : '-translate-y-2'
                                     }`}>
+                                    <div className="absolute inset-0 bg-black/5 dark:bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
                                     <img
-                                        src={`https://picsum.photos/200/200?random=${50 + i}`}
-                                        alt={`User ${i + 1}`}
-                                        className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                                        src={imgUrl}
+                                        alt={`Professional User ${i + 1}`}
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter grayscale group-hover:grayscale-0"
+                                        loading="lazy"
                                     />
                                 </div>
                             ))}

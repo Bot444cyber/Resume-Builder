@@ -6,7 +6,8 @@
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
-  --primary-blue: #2563eb;
+  --primary-blue: #171717;
+  /* Changed to Neutral 900 */
   --deep-slate: #0f172a;
 }
 
@@ -14,8 +15,9 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: 'Plus Jakarta Sans', sans-serif;
-  --primary-neon: #00FF9C;
-  --deep-navy: #001233;
+  --primary-neon: #ffffff;
+  /* Changed to White */
+  --deep-navy: #000000;
 
   /* Configure class-based dark mode */
 }
@@ -28,6 +30,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
 }
+
+/* Custom Utilities from Original Design */
+
+.bg-grid {
+  background-image: radial-gradient(circle at 1.5px 1.5px, #f1f5f9 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px) saturate(100%);
+  /* Reduced saturation */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  /* Darker border */
+}
+
+/* ... (skipping some unchanged parts if manageable, but replace_file_content needs contiguous block. I'll stick to replacing the relevant variable block and utility block separately or together if close) */
+/* Actually, the file is small enough to be careful. I will replace the root variables and theme block first. */
+
 
 /* Custom Utilities from Original Design */
 
@@ -59,7 +80,7 @@ body {
   position: absolute;
   width: 60vw;
   height: 60vw;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.05) 0%, transparent 70%);
   pointer-events: none;
   filter: blur(80px);
 }
@@ -174,12 +195,12 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
   animation: shimmer 3s infinite linear;
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #0f172a 10%, #2563eb 90%);
+  background: linear-gradient(135deg, #000000 10%, #4b5563 90%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -200,7 +221,8 @@ body {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+  /* Brighter shine for monochrome */
   opacity: 0;
   transition: opacity 0.4s;
   pointer-events: none;
@@ -229,13 +251,14 @@ body {
 }
 
 .btn-neon {
-  background-color: var(--primary-neon);
+  background-color: var(--foreground);
+  color: var(--background);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .btn-neon:hover {
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 20px 40px -10px rgba(0, 255, 156, 0.5);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
 }
 
 .text-outline {
@@ -350,4 +373,22 @@ body {
 
 .animate-marquee-right {
   animation: marquee-right 30s linear infinite;
+}
+
+/* 3D Card Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.rotate-x-2 {
+  transform: rotateX(2deg);
+}
+
+.rotate-x-0 {
+  transform: rotateX(0deg);
+}
+
+/* Smooth Card Hover */
+.template-card-hover {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }

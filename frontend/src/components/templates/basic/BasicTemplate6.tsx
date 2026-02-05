@@ -26,29 +26,29 @@ export const BasicTemplate6: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                 </div>
                 <div className="flex flex-col gap-3 text-sm font-medium pt-2">
                     <div className="flex items-center gap-3">
-                        <div className="bg-black text-white p-1 rounded-full"><Phone size={12} /></div>
+                        <div className="text-white p-1 rounded-full" style={{ backgroundColor: data.accentColor }}><Phone size={12} /></div>
                         <EditableItem value={data.phone} onChange={(val) => onUpdate('phone', val)} />
                     </div>
                     <div className="flex items-center gap-3">
-                        <div className="bg-black text-white p-1 rounded-full"><Mail size={12} /></div>
+                        <div className="text-white p-1 rounded-full" style={{ backgroundColor: data.accentColor }}><Mail size={12} /></div>
                         <EditableItem value={data.email} onChange={(val) => onUpdate('email', val)} />
                     </div>
                     {data.address && (
                         <div className="flex items-center gap-3">
-                            <div className="bg-black text-white p-1 rounded-full"><MapPin size={12} /></div>
+                            <div className="text-white p-1 rounded-full" style={{ backgroundColor: data.accentColor }}><MapPin size={12} /></div>
                             <EditableItem value={data.address} onChange={(val) => onUpdate('address', val)} />
                         </div>
                     )}
                 </div>
             </header>
 
-            <div className="w-full h-0.5 bg-slate-800 mb-12"></div>
+            <div className="w-full h-0.5 mb-12" style={{ backgroundColor: data.accentColor }}></div>
 
             <div className="grid grid-cols-12 gap-12 h-full">
                 {/* Left Column (Narrow) */}
                 <div className="col-span-4 space-y-12 border-r border-slate-300 pr-8">
                     <section>
-                        <h2 className="text-base font-bold uppercase tracking-widest mb-6 border-b-2 border-slate-900 pb-2 inline-block w-full">
+                        <h2 className="text-base font-bold uppercase tracking-widest mb-6 border-b-2 pb-2 inline-block w-full" style={{ borderColor: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.education || 'Education'} onChange={(val) => onTitleUpdate('education', val)} />
                         </h2>
                         <div className="space-y-4">
@@ -63,7 +63,7 @@ export const BasicTemplate6: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                     </section>
 
                     <section>
-                        <h2 className="text-base font-bold uppercase tracking-widest mb-6 border-b-2 border-slate-900 pb-2 inline-block w-full">
+                        <h2 className="text-base font-bold uppercase tracking-widest mb-6 border-b-2 pb-2 inline-block w-full" style={{ borderColor: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.skills || 'Core Skills'} onChange={(val) => onTitleUpdate('skills', val)} />
                         </h2>
 
@@ -89,7 +89,7 @@ export const BasicTemplate6: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                 {/* Right Column (Wide) */}
                 <div className="col-span-8 space-y-12">
                     <section>
-                        <h2 className="text-base font-bold uppercase tracking-widest mb-6 border-b-2 border-slate-900 pb-2 w-full">
+                        <h2 className="text-base font-bold uppercase tracking-widest mb-6 border-b-2 pb-2 w-full" style={{ borderColor: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.summary || 'Summary'} onChange={(val) => onTitleUpdate('summary', val)} />
                         </h2>
                         <div className="text-sm leading-loose text-slate-700 font-medium">
@@ -98,7 +98,7 @@ export const BasicTemplate6: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                     </section>
 
                     <section>
-                        <h2 className="text-base font-bold uppercase tracking-widest mb-8 border-b-2 border-slate-900 pb-2 w-full">
+                        <h2 className="text-base font-bold uppercase tracking-widest mb-8 border-b-2 pb-2 w-full" style={{ borderColor: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.experience || 'Professional Experience'} onChange={(val) => onTitleUpdate('experience', val)} />
                         </h2>
                         <div className="space-y-8">

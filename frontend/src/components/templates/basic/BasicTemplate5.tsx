@@ -34,25 +34,25 @@ export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
 
                 {/* Decorative Lines and Rings */}
                 <div className="relative h-16 flex items-center justify-center">
-                    <div className="absolute w-full h-px bg-stone-400 top-1/2 -translate-y-[6px]"></div>
-                    <div className="absolute w-full h-px bg-stone-400 top-1/2 translate-y-[6px]"></div>
+                    <div className="absolute w-full h-px top-1/2 -translate-y-[6px]" style={{ backgroundColor: data.accentColor }}></div>
+                    <div className="absolute w-full h-px top-1/2 translate-y-[6px]" style={{ backgroundColor: data.accentColor }}></div>
 
                     <div className="relative z-10 bg-[#E8E8E8] px-4 flex -space-x-4">
-                        <div className="w-12 h-12 rounded-full border border-stone-800 bg-transparent"></div>
-                        <div className="w-12 h-12 rounded-full border border-stone-800 bg-transparent"></div>
-                        <div className="w-12 h-12 rounded-full border border-stone-800 bg-transparent"></div>
+                        <div className="w-12 h-12 rounded-full border bg-transparent" style={{ borderColor: data.accentColor }}></div>
+                        <div className="w-12 h-12 rounded-full border bg-transparent" style={{ borderColor: data.accentColor }}></div>
+                        <div className="w-12 h-12 rounded-full border bg-transparent" style={{ borderColor: data.accentColor }}></div>
                     </div>
                 </div>
             </header>
 
             <div className="grid grid-cols-12 gap-12 relative">
                 {/* Vertical Divider Line */}
-                <div className="absolute left-[33%] top-0 bottom-0 w-px bg-stone-400"></div>
+                <div className="absolute left-[33%] top-0 bottom-0 w-px" style={{ backgroundColor: data.accentColor }}></div>
 
                 {/* Left Column */}
                 <aside className="col-span-4 pr-4 space-y-12">
                     <section>
-                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">
+                        <h2 className="text-lg font-mono font-bold mb-4" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.summary || 'About Me'} onChange={(val) => onTitleUpdate('summary', val)} />
                         </h2>
                         <div className="text-xs leading-loose text-justify text-stone-600 font-light">
@@ -60,10 +60,10 @@ export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                         </div>
                     </section>
 
-                    <div className="w-full h-px bg-stone-400"></div>
+                    <div className="w-full h-px" style={{ backgroundColor: data.accentColor }}></div>
 
                     <section>
-                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">
+                        <h2 className="text-lg font-mono font-bold mb-4" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.skills || 'Skills'} onChange={(val) => onTitleUpdate('skills', val)} />
                         </h2>
                         <div className="flex flex-col gap-2 text-xs font-light text-stone-600">
@@ -75,7 +75,7 @@ export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                 {/* Right Column */}
                 <main className="col-span-8 space-y-12 pl-4">
                     <section>
-                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-6">
+                        <h2 className="text-lg font-mono font-bold mb-6" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.experience || 'Work Experience'} onChange={(val) => onTitleUpdate('experience', val)} />
                         </h2>
                         <div className="space-y-8">
@@ -96,10 +96,10 @@ export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                         </div>
                     </section>
 
-                    <div className="w-full h-px bg-stone-400"></div>
+                    <div className="w-full h-px" style={{ backgroundColor: data.accentColor }}></div>
 
                     <section>
-                        <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">
+                        <h2 className="text-lg font-mono font-bold mb-4" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.education || 'Education'} onChange={(val) => onTitleUpdate('education', val)} />
                         </h2>
                         <div className="text-sm space-y-4">
@@ -115,12 +115,12 @@ export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                         </div>
                     </section>
 
-                    <div className="w-full h-px bg-stone-400"></div>
+                    <div className="w-full h-px" style={{ backgroundColor: data.accentColor }}></div>
 
                     {/* Custom Section for Certifications */}
                     {data.customSectionTitle && (
                         <section>
-                            <h2 className="text-lg font-mono font-bold text-stone-800 mb-4">
+                            <h2 className="text-lg font-mono font-bold mb-4" style={{ color: data.accentColor }}>
                                 <EditableItem value={data.customSectionTitle} onChange={(val) => onUpdate('customSectionTitle', val)} />
                             </h2>
                             <div className="text-xs font-light text-stone-600 uppercase tracking-wide">
@@ -133,8 +133,8 @@ export const BasicTemplate5: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
 
             {/* Footer Lines */}
             <div className="absolute bottom-12 left-12 right-12 h-16 flex flex-col justify-center gap-2">
-                <div className="w-full h-px bg-stone-400"></div>
-                <div className="w-full h-px bg-stone-400"></div>
+                <div className="w-full h-px" style={{ backgroundColor: data.accentColor }}></div>
+                <div className="w-full h-px" style={{ backgroundColor: data.accentColor }}></div>
             </div>
         </div>
     );

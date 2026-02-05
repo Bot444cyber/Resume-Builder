@@ -1,62 +1,56 @@
 import React from 'react';
-import { PARTNERS } from './home/constants';
-import { Facebook, Twitter, Linkedin, Instagram, Mail, LayoutTemplate, Shield, FileText, Phone, MapPin } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Instagram, Mail, LayoutTemplate, Github } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Footer: React.FC = () => {
     const productLinks = [
-        { name: 'Resume Builder', href: '/templates' },
-        { name: 'CV Maker', href: '/templates' },
         { name: 'Templates', href: '/templates' },
-    ];
-
-    const resourceLinks = [
-        { name: 'Career Blog', href: '#' },
-        { name: 'Interview Tips', href: '#' },
-        { name: 'Resume Examples', href: '#' },
-        { name: 'Job Search', href: '#' },
-        { name: 'Salary Analyzer', href: '#' },
-    ];
-
-    const contactInfo = [
-        { icon: Mail, text: 'support@livecareer.com' },
-        { icon: Phone, text: '+1 (555) 123-4567' },
-        { icon: MapPin, text: '123 Career Blvd, Suite 100 San Francisco, CA 94105', isMultiLine: true },
+        { name: 'Create Resume', href: '/templates' },
     ];
 
     const legalLinks = [
-        { name: 'Privacy Policy', href: '/privacy' },
-        { name: 'Terms of Service', href: '/terms' },
-        { name: 'Cookie Policy', href: '/cookies' },
+        { name: 'Privacy Policy', href: '#' },
+        { name: 'Terms of Service', href: '#' },
     ];
 
-    const socialLinks = [Facebook, Twitter, Instagram, Linkedin];
+    const socialLinks = [
+        { icon: Twitter, href: '#' },
+        { icon: Github, href: '#' },
+        { icon: Linkedin, href: '#' }
+    ];
 
     return (
-        <footer className="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 pt-16 pb-8 transition-colors duration-300">
+        <footer className="bg-slate-50 dark:bg-black border-t border-slate-200 dark:border-white/10 pt-16 pb-8 transition-colors duration-300">
             <div className="container mx-auto px-6 lg:px-24">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                     {/* Brand Column */}
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                                <span className="font-bold text-white text-lg">L</span>
+                    <div className="col-span-1 md:col-span-2 space-y-6">
+                        <Link href="/" className="flex items-center gap-2 group w-fit">
+                            <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+                                <Image
+                                    src="/image/website/svg/icon.svg"
+                                    alt="CVBuilder Logo"
+                                    fill
+                                    className="object-cover"
+                                />
                             </div>
-                            <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-                                Live<span className="text-blue-600">Career</span>
+                            <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
+                                CVBuilder<span className="text-blue-600 dark:text-blue-500">.</span>
                             </span>
-                        </div>
-                        <p className="text-slate-500 dark:text-gray-400 leading-relaxed">
-                            Building careers with AI-powered tools. Create professional resumes, cover letters, and portfolios in minutes.
+                        </Link>
+                        <p className="text-slate-500 dark:text-gray-400 leading-relaxed max-w-sm">
+                            The professional's choice for building stunning, ATS-friendly resumes.
+                            Crafted with precision to help you land your dream job.
                         </p>
                         <div className="flex gap-4">
-                            {socialLinks.map((Icon, index) => (
+                            {socialLinks.map((social, index) => (
                                 <Link
                                     key={index}
-                                    href="#"
-                                    className="w-10 h-10 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-gray-400 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 hover:border-blue-600 transition-all"
+                                    href={social.href}
+                                    className="w-10 h-10 rounded-lg bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-gray-400 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
                                 >
-                                    <Icon size={18} />
+                                    <social.icon size={18} />
                                 </Link>
                             ))}
                         </div>
@@ -64,11 +58,11 @@ const Footer: React.FC = () => {
 
                     {/* Quick Links */}
                     <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white mb-6">Product</h3>
+                        <h3 className="font-bold text-slate-900 dark:text-white mb-6">Platform</h3>
                         <ul className="space-y-4">
                             {productLinks.map((item) => (
                                 <li key={item.name}>
-                                    <Link href={item.href} className="text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                    <Link href={item.href} className="text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
                                         {item.name}
                                     </Link>
                                 </li>
@@ -76,45 +70,27 @@ const Footer: React.FC = () => {
                         </ul>
                     </div>
 
-                    {/* Resources */}
+                    {/* Contact - Simplified */}
                     <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white mb-6">Resources</h3>
+                        <h3 className="font-bold text-slate-900 dark:text-white mb-6">Support</h3>
                         <ul className="space-y-4">
-                            {resourceLinks.map((item) => (
-                                <li key={item.name}>
-                                    <Link href={item.href} className="text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                                        {item.name}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Contact */}
-                    <div>
-                        <h3 className="font-bold text-slate-900 dark:text-white mb-6">Contact</h3>
-                        <ul className="space-y-4">
-                            {contactInfo.map((info, index) => (
-                                <li key={index} className="flex items-start gap-3 text-slate-500 dark:text-gray-400">
-                                    <info.icon size={18} className="text-blue-600 mt-1 shrink-0" />
-                                    {info.isMultiLine ? (
-                                        <span>{info.text.split('San Francisco').join('\nSan Francisco')}</span> // Simple linebreak hacking for now, or just let it wrap
-                                    ) : (
-                                        <span>{info.text}</span>
-                                    )}
-                                </li>
-                            ))}
+                            <li>
+                                <a href="mailto:support@cvbuilder.com" className="flex items-center gap-3 text-slate-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium">
+                                    <Mail size={18} />
+                                    <span>support@cvbuilder.com</span>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
 
                 <div className="border-t border-slate-200 dark:border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-slate-500 dark:text-gray-500 text-sm">
-                        © 2024 LiveCareer. All rights reserved.
+                    <p className="text-slate-500 dark:text-gray-500 text-sm font-medium">
+                        © {new Date().getFullYear()} CVBuilder. All rights reserved.
                     </p>
-                    <div className="flex items-center gap-6 text-sm">
+                    <div className="flex items-center gap-8 text-sm">
                         {legalLinks.map((link) => (
-                            <Link key={link.name} href={link.href} className="text-slate-500 dark:text-gray-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+                            <Link key={link.name} href={link.href} className="text-slate-500 dark:text-gray-500 hover:text-slate-900 dark:hover:text-white transition-colors font-medium">
                                 {link.name}
                             </Link>
                         ))}

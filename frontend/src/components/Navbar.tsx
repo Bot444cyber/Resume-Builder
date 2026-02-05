@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ArrowRight, FileText, Briefcase, LayoutTemplate, Sun, Moon } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTheme } from '../context/ThemeProvider';
 
 interface NavbarProps {
@@ -45,18 +46,17 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
     const logoTextClass = isDark ? 'text-white' : 'text-slate-900';
 
     const navBgClass = scrolled
-        ? (isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-gray-100')
+        ? (isDark ? 'bg-black/90 backdrop-blur-md border-slate-800' : 'bg-white/90 backdrop-blur-md border-slate-200 shadow-sm')
         : 'bg-transparent border-transparent';
 
     // Navigation Data
     const navLinks = [
         { name: 'Templates', href: '/templates', icon: LayoutTemplate },
-        { name: 'Services', href: '#', icon: Briefcase },
+        { name: 'AI Analyzer', href: '#', icon: Briefcase },
         { name: 'Resources', href: '#', icon: FileText },
     ];
 
     const actionLinks = [
-        { name: 'Log in', href: '/login', type: 'text' },
         { name: 'Create Resume', href: '/templates', type: 'primary', icon: ArrowRight }
     ];
 
@@ -65,14 +65,20 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
             <nav className="sticky top-0 z-100 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 py-3 px-6 lg:px-24">
                 {/* Editor Mode Navbar Content - Keeping as is for now, maybe add toggle later if needed */}
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
-                    <div className="flex items-center gap-3 cursor-pointer group" onClick={onLogoClick}>
-                        <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110">
-                            <span className="font-bold text-white text-lg">L</span>
+                    <Link href="/" className="flex items-center gap-2 group relative z-50">
+                        <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 group-hover:scale-105 transition-transform duration-300">
+                            <Image
+                                src="/image/website/svg/icon.svg"
+                                alt="Resume Builder Logo"
+                                fill
+                                className="object-cover"
+                                priority
+                            />
                         </div>
-                        <span className="text-xl font-bold tracking-tight text-white hidden sm:block">
-                            Live<span className="text-blue-500">Career</span>
+                        <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            CVBuilder<span className="text-blue-600 dark:text-blue-500">.</span>
                         </span>
-                    </div>
+                    </Link>
                     <div className="flex items-center gap-4">
                         <button
                             onClick={toggleTheme}
@@ -95,26 +101,31 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
             <nav className={`fixed top-0 inset-x-0 z-100 transition-all duration-300 backdrop-blur-xl border-b ${navBgClass} py-3 px-6 lg:px-24`}>
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2.5 group z-50 relative" onClick={onLogoClick}>
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-105 ${isDark ? 'bg-white/10 border border-white/20' : 'bg-blue-600 shadow-blue-500/20'}`}>
-                            {isDark ? (
-                                <div className="w-5 h-5 bg-white rounded-full"></div>
-                            ) : (
-                                <div className="w-5 h-1.5 bg-white rounded-full shadow-sm"></div>
-                            )}
+                    {/* Logo */}
+                    <Link href="/" className="flex items-center gap-2 group relative z-50" onClick={onLogoClick}>
+                        <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 group-hover:scale-105 transition-transform duration-300">
+                            <Image
+                                src="/image/website/svg/icon.svg"
+                                alt="Resume Builder Logo"
+                                fill
+                                className="object-cover"
+                                priority
+                            />
                         </div>
-                        <span className={`text-2xl font-extrabold tracking-tighter ${logoTextClass} transition-colors`}>
-                            Live<span className="text-blue-600">Career</span>
+                        <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            CVBuilder<span className="text-blue-600 dark:text-blue-500">.</span>
                         </span>
                     </Link>
 
                     {/* Desktop Nav */}
-                    <div className={`hidden lg:flex items-center gap-8 px-6 py-2 rounded-full transition-all`}>
+                    <div className={`hidden lg:flex items-center gap-2 px-2`}>
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className={`text-sm font-semibold ${textColorClass} ${hoverColorClass} transition-colors relative group py-1`}
+                                className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${isDark
+                                    ? 'text-slate-300 hover:text-white hover:bg-white/10'
+                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`}
                             >
                                 {link.name}
                             </Link>
@@ -126,7 +137,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
                         {/* Theme Toggle */}
                         <button
                             onClick={toggleTheme}
-                            className={`p-2 rounded-full transition-colors ${isDark ? 'hover:bg-white/10 text-gray-300 hover:text-white' : 'hover:bg-gray-100 text-slate-600 hover:text-slate-900'}`}
+                            className={`p-2.5 rounded-full transition-all duration-300 ${isDark ? 'hover:bg-white/10 text-gray-400 hover:text-white' : 'hover:bg-slate-100 text-slate-500 hover:text-slate-900'}`}
                         >
                             {isDark ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
@@ -164,7 +175,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
             </nav>
 
             {/* Mobile Menu Overlay */}
-            <div className={`fixed inset-0 z-90 ${isDark ? 'bg-slate-950' : 'bg-white'} transition-all duration-300 transform lg:hidden flex flex-col pt-24 px-6 ${mobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
+            <div className={`fixed inset-0 z-90 ${isDark ? 'bg-black' : 'bg-white'} transition-all duration-300 transform lg:hidden flex flex-col pt-24 px-6 ${mobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
                 }`}>
                 <div className="flex flex-col gap-6">
                     {navLinks.map((link) => (
@@ -184,8 +195,8 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
                                 key={action.name}
                                 href={action.href}
                                 className={`w-full py-4 text-center font-bold rounded-xl ${action.type === 'text'
-                                        ? (isDark ? 'text-white bg-white/10' : 'text-slate-700 bg-slate-50')
-                                        : 'text-white bg-blue-600 shadow-lg shadow-blue-500/30'
+                                    ? (isDark ? 'text-white bg-white/10' : 'text-slate-700 bg-slate-50')
+                                    : 'text-white bg-blue-600 shadow-lg shadow-blue-500/30'
                                     }`}
                                 onClick={() => setMobileMenuOpen(false)}
                             >

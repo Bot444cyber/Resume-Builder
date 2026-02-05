@@ -25,14 +25,14 @@ export const BasicTemplate3: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                     <EditableItem value={data.email} onChange={(val) => onUpdate('email', val)} />
                 </div>
                 {/* Red Line */}
-                <div className="w-full h-1.5 bg-red-700 mb-8"></div>
+                <div className="w-full h-1.5 mb-8" style={{ backgroundColor: data.accentColor }}></div>
             </header>
 
             <div className="space-y-8">
                 {/* Summary Statement */}
                 <section className="grid grid-cols-12 gap-4">
                     <div className="col-span-3">
-                        <h2 className="text-sm font-bold uppercase text-slate-800">
+                        <h2 className="text-sm font-bold uppercase" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.summary || 'Summary Statement'} onChange={(val) => onTitleUpdate('summary', val)} />
                         </h2>
                     </div>
@@ -46,7 +46,7 @@ export const BasicTemplate3: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                 {/* Skills */}
                 <section className="grid grid-cols-12 gap-4">
                     <div className="col-span-3">
-                        <h2 className="text-sm font-bold uppercase text-slate-800">
+                        <h2 className="text-sm font-bold uppercase" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.skills || 'Skills'} onChange={(val) => onTitleUpdate('skills', val)} />
                         </h2>
                     </div>
@@ -61,7 +61,7 @@ export const BasicTemplate3: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                 {data.customSectionTitle && (
                     <section className="grid grid-cols-12 gap-4">
                         <div className="col-span-3">
-                            <h2 className="text-sm font-bold uppercase text-slate-800">
+                            <h2 className="text-sm font-bold uppercase" style={{ color: data.accentColor }}>
                                 <EditableItem value={data.customSectionTitle} onChange={(val) => onUpdate('customSectionTitle', val)} />
                             </h2>
                         </div>
@@ -76,7 +76,7 @@ export const BasicTemplate3: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                 {/* Work History */}
                 <section className="grid grid-cols-12 gap-4">
                     <div className="col-span-3">
-                        <h2 className="text-sm font-bold uppercase text-slate-800">
+                        <h2 className="text-sm font-bold uppercase" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.experience || 'Work History'} onChange={(val) => onTitleUpdate('experience', val)} />
                         </h2>
                     </div>
@@ -102,7 +102,7 @@ export const BasicTemplate3: React.FC<BasicResumeTemplateProps> = ({ data, onUpd
                 {/* Education */}
                 <section className="grid grid-cols-12 gap-4">
                     <div className="col-span-3">
-                        <h2 className="text-sm font-bold uppercase text-slate-800">
+                        <h2 className="text-sm font-bold uppercase" style={{ color: data.accentColor }}>
                             <EditableItem value={data.sectionTitles?.education || 'Education'} onChange={(val) => onTitleUpdate('education', val)} />
                         </h2>
                     </div>
