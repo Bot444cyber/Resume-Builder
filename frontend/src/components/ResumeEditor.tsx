@@ -220,26 +220,22 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
     const handlePrint = () => {
         if (resumeRef.current) {
             const height = resumeRef.current.scrollHeight;
-            const a4HeightPx = 1122; // 297mm @ 96dpi
-            if (height > a4HeightPx) {
-                const scale = a4HeightPx / height;
-                // Add a small buffer to avoid edge clipping
-                resumeRef.current.style.setProperty('--print-scale', `scale(${scale - 0.01})`);
+            // Target Height: 1030px (Safe buffer for Letter 11" which is approx 1056px, and A4 11.7")
+            // This ensures it fits on both Letter and A4
+            const maxPageHeight = 1030;
+
+            if (height > maxPageHeight) {
+                const zoomFactor = maxPageHeight / height;
+                // Apply zoom variable - using a slight buffer to be safe
+                resumeRef.current.style.setProperty('--print-zoom', (zoomFactor - 0.01).toString());
             } else {
-                resumeRef.current.style.removeProperty('--print-scale');
+                resumeRef.current.style.removeProperty('--print-zoom');
             }
         }
 
         // Short delay to ensure styles apply
         setTimeout(() => {
             window.print();
-
-            // Cleanup after print dialog opens (browsers pause JS when print dialog is open typically, but just in case)
-            // Actually, best to cleanup on window focus or just leave it until next print?
-            // Safer to leave it briefly then remove, but often print dialog blocks execution.
-            // We'll trust the user to not see the weird scale on normal view because --print-scale variable 
-            // is only used in @media print block in globals.css so it won't affect screen view!
-            // Wait - I need to ensure globals.css only applies this transform in print.
         }, 10);
     };
 
