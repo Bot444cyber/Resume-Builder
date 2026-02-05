@@ -342,9 +342,9 @@ body {
     padding: 0 !important;
     overflow: visible !important;
     zoom: var(--print-zoom, 1) !important;
-    width: 100% !important;
     max-width: 210mm !important;
-    /* CRITICAL: Remove zoom scaling */
+    /* CRITICAL: Remove zoom scaling from screen preview */
+    transform: none !important;
     box-shadow: none !important;
     border: none !important;
   }

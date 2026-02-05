@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '../context/ThemeProvider';
-import { Sun, Moon, Sparkles, ArrowRight } from 'lucide-react';
+import { Sun, Moon, Sparkles, ArrowRight, FileDown } from 'lucide-react';
 import { Experience, ResumeData, TemplateId, ResumeSection, Education, Skill } from '../types';
 
 // Template Imports
@@ -223,14 +223,13 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
     const handlePrint = () => {
         if (resumeRef.current) {
             const height = resumeRef.current.scrollHeight;
-            // Target Height: 1030px (Safe buffer for Letter 11" which is approx 1056px, and A4 11.7")
-            // This ensures it fits on both Letter and A4
-            const maxPageHeight = 1030;
+            // Target Height: 980px (Safe buffer for Letter/A4 and printer margins)
+            const maxPageHeight = 980;
 
             if (height > maxPageHeight) {
                 const zoomFactor = maxPageHeight / height;
-                // Apply zoom variable - using a slight buffer to be safe
-                resumeRef.current.style.setProperty('--print-zoom', (zoomFactor - 0.01).toString());
+                // Apply zoom variable
+                resumeRef.current.style.setProperty('--print-zoom', zoomFactor.toString());
             } else {
                 resumeRef.current.style.removeProperty('--print-zoom');
             }
@@ -239,7 +238,11 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
         // Short delay to ensure styles apply
         setTimeout(() => {
             window.print();
-        }, 10);
+        }, 500);
+    };
+
+    const handleDownloadPDF = () => {
+        handlePrint();
     };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -795,6 +798,10 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                         <div className="flex items-center gap-2 sm:gap-4">
                             <button onClick={toggleTheme} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-900 dark:text-white transition-all shrink-0">
                                 {isDark ? <Sun size={18} /> : <Moon size={18} />}
+                            </button>
+                            <button onClick={handleDownloadPDF} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 px-3 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center gap-2 uppercase tracking-wider shrink-0">
+                                <FileDown size={14} />
+                                <span className="hidden lg:inline">One-Page PDF</span>
                             </button>
                             <button onClick={handlePrint} className="bg-slate-900 dark:bg-white text-white dark:text-black pl-4 pr-5 sm:pl-5 sm:pr-6 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-black hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 uppercase tracking-wider whitespace-nowrap">
                                 <ArrowRight size={14} className="rotate-[-45deg]" />
