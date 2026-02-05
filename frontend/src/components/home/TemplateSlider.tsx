@@ -93,7 +93,7 @@ const TemplateSlider: React.FC<TemplateSliderProps> = ({ onSelect }) => {
 
                                             {/* Template Preview using ResumeThumbnail */}
                                             <Link href={`/editor?template=${template.id}`} className="block relative overflow-hidden rounded-2xl">
-                                                <div className="transition-transform duration-700 ease-out group-hover:scale-110">
+                                                <div className="transition-transform duration-700 ease-out group-hover:scale-110 scale-[0.75] sm:scale-100">
                                                     <ResumeThumbnail scale={0.45}>
                                                         <TemplatePreview templateId={template.id} />
                                                     </ResumeThumbnail>

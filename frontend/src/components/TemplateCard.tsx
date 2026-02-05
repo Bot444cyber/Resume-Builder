@@ -17,7 +17,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({ template }) => {
     const CARD_WIDTH = '280px';
 
     return (
-        <div className="group relative flex flex-col items-center mx-auto" style={{ width: CARD_WIDTH }}>
+        <div className="group relative flex flex-col items-center mx-auto w-full" style={{ maxWidth: CARD_WIDTH }}>
             {/* Thumbnail Container */}
             <Link href={`/editor?template=${template.id}`} className="block relative z-10 w-full perspective-1000 rounded-3xl overflow-hidden">
                 <div className="relative transform transition-all duration-700 ease-out group-hover:scale-[1.02]">

@@ -2,7 +2,7 @@ import React from 'react';
 
 const TrustSection: React.FC = () => {
     return (
-        <section className="py-24 px-6 lg:px-24 bg-white dark:bg-black overflow-hidden border-b border-gray-50 dark:border-slate-800 transition-colors duration-300">
+        <section className="py-12 lg:py-24 px-6 lg:px-24 bg-white dark:bg-black overflow-hidden border-b border-gray-50 dark:border-slate-800 transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
                 <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
                     {/* Left Content */}

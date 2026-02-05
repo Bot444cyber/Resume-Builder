@@ -45,7 +45,7 @@ const Features = () => {
     const [activeFeature, setActiveFeature] = useState(0);
 
     return (
-        <section className="py-24 bg-white dark:bg-black relative overflow-hidden transition-colors duration-500">
+        <section className="py-12 lg:py-24 bg-white dark:bg-black relative overflow-hidden transition-colors duration-500">
             {/* Background Elements */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-slate-200/50 dark:bg-white/5 rounded-full blur-[100px]"></div>

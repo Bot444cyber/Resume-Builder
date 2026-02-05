@@ -5,7 +5,7 @@ import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
 import ResumeThumbnail from '../../components/ResumeThumbnail';
-import { TemplatePreview } from '../../components/TemplatePreview';
+
 import { TemplateCard } from '../../components/TemplateCard';
 
 const templates = [
@@ -42,7 +42,7 @@ export default function TemplatesPage() {
         <div className="min-h-screen bg-white dark:bg-black transition-colors duration-300">
             <Navbar />
 
-            <main className="py-20 px-6 min-h-[80vh]">
+            <main className="py-20 px-4 md:px-6 min-h-[80vh] overflow-x-hidden">
                 <div className="max-w-7xl mx-auto text-center mb-16">
                     <h1 className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-6 tracking-tight">
                         {selectedCategory ? `${selectedCategory} Templates` : 'Choose Your Style'}
@@ -56,33 +56,34 @@ export default function TemplatesPage() {
 
                 <div className="flex flex-col items-center">
                     {/* Filter Bar */}
-                    <div className="flex items-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-900 rounded-2xl mb-16 border border-slate-200 dark:border-slate-800 shadow-sm relative z-10">
-                        {['All', 'Basic', 'Modern', 'Professional'].map((filter) => (
-                            <button
-                                key={filter}
-                                onClick={() => setSelectedCategory(filter === 'All' ? null : filter)}
-                                className={`px-8 py-3 rounded-full text-sm font-bold transition-all duration-300 ${(filter === 'All' && !selectedCategory) || filter === selectedCategory
-                                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl scale-105'
-                                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
-                                    }`}
-                            >
-                                {filter}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Templates Grid */}
-                    <div className="max-w-7xl mx-auto w-full">
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-                            {(selectedCategory ? templates.filter(t => t.category === selectedCategory) : templates).map((template) => (
-                                <TemplateCard key={template.id} template={template} />
+                    <div className="w-full max-w-sm md:max-w-2xl overflow-x-auto no-scrollbar pb-4 md:pb-0 mb-8 md:mb-16 px-4">
+                        <div className="flex items-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative z-10 w-max mx-auto">
+                            {['All', 'Basic', 'Modern', 'Professional'].map((filter) => (
+                                <button
+                                    key={filter}
+                                    onClick={() => setSelectedCategory(filter === 'All' ? null : filter)}
+                                    className={`px-6 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-sm font-bold transition-all duration-300 whitespace-nowrap ${(filter === 'All' && !selectedCategory) || filter === selectedCategory
+                                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xl scale-105'
+                                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+                                        }`}
+                                >
+                                    {filter}
+                                </button>
                             ))}
                         </div>
                     </div>
                 </div>
-            </main>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl mx-auto">
+                    {templates
+                        .filter((t) => !selectedCategory || t.category === selectedCategory)
+                        .map((template) => (
+                            <TemplateCard key={template.id} template={template} />
+                        ))}
+                </div>
+            </main >
 
             <Footer />
-        </div>
+        </div >
     );
 }

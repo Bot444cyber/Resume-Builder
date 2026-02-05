@@ -62,7 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
 
     if (isEditorMode) {
         return (
-            <nav className="sticky top-0 z-100 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 py-3 px-6 lg:px-24">
+            <nav className="sticky top-0 z-[100] bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 py-3 px-6 lg:px-24">
                 {/* Editor Mode Navbar Content - Keeping as is for now, maybe add toggle later if needed */}
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
                     <Link href="/" className="flex items-center gap-2 group relative z-50">
@@ -98,7 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
 
     return (
         <>
-            <nav className={`fixed top-0 inset-x-0 z-100 transition-all duration-300 backdrop-blur-xl border-b ${navBgClass} py-3 px-6 lg:px-24`}>
+            <nav className={`fixed top-0 inset-x-0 z-[100] transition-all duration-300 backdrop-blur-xl border-b ${navBgClass} py-3 px-6 lg:px-24`}>
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
                     {/* Logo */}
                     {/* Logo */}

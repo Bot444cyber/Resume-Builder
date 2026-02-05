@@ -7,7 +7,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onStart }) => {
     return (
-        <section className="relative min-h-[140vh] flex flex-col justify-start pt-32 lg:pt-40 bg-white dark:bg-black overflow-hidden text-slate-900 dark:text-white selection:bg-gray-200 dark:selection:bg-white/20 transition-colors duration-500">
+        <section className="relative min-h-[100dvh] lg:min-h-[140vh] flex flex-col justify-start pt-24 lg:pt-40 bg-white dark:bg-black overflow-hidden text-slate-900 dark:text-white selection:bg-gray-200 dark:selection:bg-white/20 transition-colors duration-500">
 
             {/* Noise Texture (Darker Dots) Background - Light Mode Only */}
             <div

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
 import { GoogleGenAI } from "@google/genai";
-import { Experience, ResumeData, TemplateId, ResumeSection, Education, Skill } from '../types';
-import { Sun, Moon, Sparkles, ArrowRight } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '../context/ThemeProvider';
+import { Sun, Moon, Sparkles, ArrowRight } from 'lucide-react';
+import { Experience, ResumeData, TemplateId, ResumeSection, Education, Skill } from '../types';
 
 // Template Imports
 import { BasicTemplate1 } from './templates/basic/BasicTemplate1';
@@ -193,6 +193,16 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
     const [activeTab, setActiveTab] = useState<'content' | 'design' | 'ai'>('content');
     const [isAiLoading, setIsAiLoading] = useState(false);
     const [zoom, setZoom] = useState(0.8);
+
+    // Optimize zoom for mobile on load
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const isMobile = window.innerWidth < 768;
+            if (isMobile) {
+                setZoom(0.5);
+            }
+        }
+    }, []);
 
     // AI Scoring State
     const [aiScore, setAiScore] = useState<{ score: number, feedback: string[] } | null>(null);
@@ -745,26 +755,26 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                 {/* Right Side - Preview */}
                 <div className="flex-1 bg-slate-100 dark:bg-[#0a0a0a] overflow-hidden relative flex flex-col">
                     {/* Toolbar */}
-                    <div className="h-16 bg-white dark:bg-black border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-6 shrink-0 no-print z-10 shadow-sm">
-                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg">
-                            <button onClick={() => setZoom(z => Math.max(0.4, z - 0.1))} className="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 rounded-md text-slate-600 dark:text-slate-300 transition-all font-bold">-</button>
-                            <span className="text-xs font-black w-10 text-center text-slate-900 dark:text-white select-none">{Math.round(zoom * 100)}%</span>
-                            <button onClick={() => setZoom(z => Math.min(2, z + 0.1))} className="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 rounded-md text-slate-600 dark:text-slate-300 transition-all font-bold">+</button>
+                    <div className="h-16 bg-white dark:bg-black border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 shrink-0 no-print z-10 shadow-sm gap-2">
+                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg shrink-0">
+                            <button onClick={() => setZoom(z => Math.max(0.4, z - 0.1))} className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 rounded-md text-slate-600 dark:text-slate-300 transition-all font-bold">-</button>
+                            <span className="text-[10px] sm:text-xs font-black w-8 sm:w-10 text-center text-slate-900 dark:text-white select-none">{Math.round(zoom * 100)}%</span>
+                            <button onClick={() => setZoom(z => Math.min(2, z + 0.1))} className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center hover:bg-white dark:hover:bg-slate-800 rounded-md text-slate-600 dark:text-slate-300 transition-all font-bold">+</button>
                         </div>
-                        <div className="flex items-center gap-4">
-                            <button onClick={toggleTheme} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-900 dark:text-white transition-all">
-                                {isDark ? <Sun size={20} /> : <Moon size={20} />}
+                        <div className="flex items-center gap-2 sm:gap-4">
+                            <button onClick={toggleTheme} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-900 dark:text-white transition-all shrink-0">
+                                {isDark ? <Sun size={18} /> : <Moon size={18} />}
                             </button>
-                            <button onClick={() => window.print()} className="bg-slate-900 dark:bg-white text-white dark:text-black pl-5 pr-6 py-2.5 rounded-full text-xs font-black hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 uppercase tracking-wider">
+                            <button onClick={() => window.print()} className="bg-slate-900 dark:bg-white text-white dark:text-black pl-4 pr-5 sm:pl-5 sm:pr-6 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-black hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 uppercase tracking-wider whitespace-nowrap">
                                 <ArrowRight size={14} className="rotate-[-45deg]" />
-                                <span>Export PDF</span>
+                                <span>Export <span className="hidden sm:inline">PDF</span></span>
                             </button>
                         </div>
                     </div>
 
                     {/* Preview Area */}
-                    <div className="flex-1 overflow-auto custom-scrollbar p-8 lg:p-12 flex items-start justify-center bg-slate-100 dark:bg-[#0a0a0a]">
-                        <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }} className="shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] dark:shadow-none dark:border dark:border-slate-800 transition-transform duration-300 ease-out origin-top print-area bg-white text-left">
+                    <div className="flex-1 overflow-auto custom-scrollbar p-4 sm:p-8 lg:p-12 flex items-start bg-slate-100 dark:bg-[#0a0a0a]">
+                        <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }} className="m-auto shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] dark:shadow-none dark:border dark:border-slate-800 transition-transform duration-300 ease-out origin-top print-area bg-white text-left">
                             {renderTemplate()}
                         </div>
                     </div>
