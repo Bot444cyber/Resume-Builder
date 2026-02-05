@@ -802,7 +802,7 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
 
                     {/* Preview Area */}
                     <div className="flex-1 overflow-auto custom-scrollbar p-4 sm:p-8 lg:p-12 flex items-start bg-slate-100 dark:bg-[#0a0a0a]">
-                        <div ref={resumeRef} style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }} className="m-auto shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] dark:shadow-none dark:border dark:border-slate-800 transition-transform duration-300 ease-out origin-top print-area bg-white text-left">
+                        <div ref={resumeRef} style={{ transform: `scale(${zoom})`, transformOrigin: 'top center', width: '210mm', minWidth: '210mm' }} className="m-auto shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] dark:shadow-none dark:border dark:border-slate-800 transition-transform duration-300 ease-out origin-top print-area bg-white text-left">
                             {renderTemplate()}
                         </div>
                     </div>
