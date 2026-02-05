@@ -98,7 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick, isEditorMode }) => {
 
     return (
         <>
-            <nav className={`fixed top-0 inset-x-0 z-[100] transition-all duration-300 backdrop-blur-xl border-b ${navBgClass} py-3 px-6 lg:px-24`}>
+            <nav className={`no-print fixed top-0 inset-x-0 z-[100] transition-all duration-300 backdrop-blur-xl border-b ${navBgClass} py-3 px-6 lg:px-24`}>
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
                     {/* Logo */}
                     {/* Logo */}

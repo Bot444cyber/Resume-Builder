@@ -315,6 +315,11 @@ body {
   }
 
   /* Hide everything by default */
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+
   body * {
     visibility: hidden;
   }
@@ -331,10 +336,13 @@ body {
     left: 0 !important;
     top: 0 !important;
     width: 210mm !important;
-    min-height: 297mm !important;
+    height: 297mm !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+    transform: none !important; /* CRITICAL: Remove zoom scaling */
+    box-shadow: none !important;
+    border: none !important;
   }
 
   /* Ensure resume fills the page */
@@ -349,15 +357,6 @@ body {
     padding: 0;
     background: white !important;
     overflow: visible !important;
-  }
-
-  /* Clean up any shadows or text effects for print if needed, but allow backgrounds */
-  .shadow-2xl,
-  .shadow-xl,
-  .shadow-lg,
-  .shadow-md,
-  .shadow-sm {
-    box-shadow: none !important;
   }
 }
 
