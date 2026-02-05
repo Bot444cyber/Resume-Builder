@@ -341,8 +341,9 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     overflow: visible !important;
-    transform: var(--print-scale, none) !important;
-    transform-origin: top left !important;
+    zoom: var(--print-zoom, 1) !important;
+    width: 100% !important;
+    max-width: 210mm !important;
     /* CRITICAL: Remove zoom scaling */
     box-shadow: none !important;
     border: none !important;
