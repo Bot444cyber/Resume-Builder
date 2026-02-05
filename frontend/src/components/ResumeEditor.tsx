@@ -215,6 +215,34 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
     const [aiJobTitle, setAiJobTitle] = useState('');
     const [aiJobCompany, setAiJobCompany] = useState('');
 
+    const resumeRef = React.useRef<HTMLDivElement>(null);
+
+    const handlePrint = () => {
+        if (resumeRef.current) {
+            const height = resumeRef.current.scrollHeight;
+            const a4HeightPx = 1122; // 297mm @ 96dpi
+            if (height > a4HeightPx) {
+                const scale = a4HeightPx / height;
+                // Add a small buffer to avoid edge clipping
+                resumeRef.current.style.setProperty('--print-scale', `scale(${scale - 0.01})`);
+            } else {
+                resumeRef.current.style.removeProperty('--print-scale');
+            }
+        }
+
+        // Short delay to ensure styles apply
+        setTimeout(() => {
+            window.print();
+
+            // Cleanup after print dialog opens (browsers pause JS when print dialog is open typically, but just in case)
+            // Actually, best to cleanup on window focus or just leave it until next print?
+            // Safer to leave it briefly then remove, but often print dialog blocks execution.
+            // We'll trust the user to not see the weird scale on normal view because --print-scale variable 
+            // is only used in @media print block in globals.css so it won't affect screen view!
+            // Wait - I need to ensure globals.css only applies this transform in print.
+        }, 10);
+    };
+
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -769,7 +797,7 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                             <button onClick={toggleTheme} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-900 dark:text-white transition-all shrink-0">
                                 {isDark ? <Sun size={18} /> : <Moon size={18} />}
                             </button>
-                            <button onClick={() => window.print()} className="bg-slate-900 dark:bg-white text-white dark:text-black pl-4 pr-5 sm:pl-5 sm:pr-6 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-black hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 uppercase tracking-wider whitespace-nowrap">
+                            <button onClick={handlePrint} className="bg-slate-900 dark:bg-white text-white dark:text-black pl-4 pr-5 sm:pl-5 sm:pr-6 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-black hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 uppercase tracking-wider whitespace-nowrap">
                                 <ArrowRight size={14} className="rotate-[-45deg]" />
                                 <span>Export <span className="hidden sm:inline">PDF</span></span>
                             </button>
@@ -778,7 +806,7 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
 
                     {/* Preview Area */}
                     <div className="flex-1 overflow-auto custom-scrollbar p-4 sm:p-8 lg:p-12 flex items-start bg-slate-100 dark:bg-[#0a0a0a]">
-                        <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }} className="m-auto shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] dark:shadow-none dark:border dark:border-slate-800 transition-transform duration-300 ease-out origin-top print-area bg-white text-left">
+                        <div ref={resumeRef} style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }} className="m-auto shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] dark:shadow-none dark:border dark:border-slate-800 transition-transform duration-300 ease-out origin-top print-area bg-white text-left">
                             {renderTemplate()}
                         </div>
                     </div>
