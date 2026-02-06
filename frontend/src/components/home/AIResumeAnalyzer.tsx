@@ -35,7 +35,7 @@ const AIResumeAnalyzer: React.FC = () => {
                     <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg max-w-xl mx-auto font-medium">Input your draft and let our neural engine optimize your narrative for high-impact results.</p>
                 </div>
 
-                <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 lg:p-12 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.06)] dark:shadow-none relative overflow-hidden group">
+                <div className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-4xl md:rounded-[2.5rem] p-6 md:p-10 lg:p-12 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.06)] dark:shadow-none relative overflow-hidden group">
                     <div className="absolute -top-12 -right-12 w-48 h-48 bg-slate-100/50 dark:bg-white/5 rounded-full blur-3xl opacity-50 group-hover:bg-slate-200/50 dark:group-hover:bg-white/10 transition-colors duration-1000" />
 
                     <textarea

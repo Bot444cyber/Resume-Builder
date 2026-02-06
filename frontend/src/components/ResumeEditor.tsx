@@ -874,7 +874,7 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                                 <span className="hidden lg:inline">One-Page PDF</span>
                             </button>
                             <button onClick={handlePrint} className="bg-slate-900 dark:bg-white text-white dark:text-black pl-4 pr-5 sm:pl-5 sm:pr-6 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-black hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-2 uppercase tracking-wider whitespace-nowrap">
-                                <ArrowRight size={14} className="rotate-[-45deg]" />
+                                <ArrowRight size={14} className="-rotate-45" />
                                 <span>Export <span className="hidden sm:inline">PDF</span></span>
                             </button>
                         </div>
