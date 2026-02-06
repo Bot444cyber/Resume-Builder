@@ -1,8 +1,9 @@
-import { GoogleGenAI } from "@google/genai";
+
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '../context/ThemeProvider';
-import { Sun, Moon, Sparkles, ArrowRight, FileDown } from 'lucide-react';
+import { Sun, Moon, Sparkles, ArrowRight, FileDown, Trash2 } from 'lucide-react';
 import { Experience, ResumeData, TemplateId, ResumeSection, Education, Skill } from '../types';
+import * as aiService from '../services/ai';
 
 // Template Imports
 import { BasicTemplate1 } from './templates/basic/BasicTemplate1';
@@ -218,6 +219,10 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
     const [aiJobTitle, setAiJobTitle] = useState('');
     const [aiJobCompany, setAiJobCompany] = useState('');
 
+    // AI Full Generator State
+    const [fullGenJobTitle, setFullGenJobTitle] = useState('');
+    const [fullGenExpLevel, setFullGenExpLevel] = useState('');
+
     const resumeRef = React.useRef<HTMLDivElement>(null);
 
     const handlePrint = () => {
@@ -245,6 +250,29 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
         handlePrint();
     };
 
+    const handleClearData = () => {
+        if (window.confirm("Are you sure you want to clear all data? This cannot be undone.")) {
+            setData({
+                ...INITIAL_DATA,
+                name: "",
+                title: "",
+                email: "",
+                phone: "",
+                address: "",
+                summary: "",
+                customSectionTitle: "",
+                customSectionContent: "",
+                experiences: [],
+                education: [],
+                skills: "",
+                skillsDetail: [],
+                profileImage: "",
+                templateId: data.templateId, // Keep current template
+                accentColor: data.accentColor // Keep current color
+            });
+        }
+    };
+
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -257,49 +285,32 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
     };
 
     const rewriteWithAi = async (field: 'summary' | 'desc', experienceId?: string) => {
-        const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-        if (!apiKey) {
-            alert("AI features require an API Key. Please create a .env.local file with NEXT_PUBLIC_GEMINI_API_KEY=your_key");
-            return;
-        }
-
         setIsAiLoading(true);
         try {
-            const genAI = new GoogleGenAI({ apiKey });
             const targetText = experienceId
                 ? data.experiences.find(e => e.id === experienceId)?.desc
                 : data.summary;
 
-            const response = await genAI.models.generateContent({
-                model: 'gemini-2.0-flash',
-                contents: `Rewrite this resume ${field === 'summary' ? 'professional summary' : 'job description'} to be more impactful, outcome-oriented, and professional for a high-level job application. Keep it concise. Original: "${targetText}"`,
-            });
+            if (!targetText) return;
 
-            if (response.text) {
-                if (experienceId) {
-                    updateExp(experienceId, 'desc', response.text.trim());
-                } else {
-                    setData({ ...data, summary: response.text.trim() });
-                }
+            const newText = await aiService.rewriteText(targetText, field === 'summary' ? 'summary' : 'job description');
+
+            if (experienceId) {
+                updateExp(experienceId, 'desc', newText);
+            } else {
+                setData({ ...data, summary: newText });
             }
         } catch (err) {
             console.error("AI Generation failed", err);
-            alert("AI Generation failed. See console for details.");
+            alert((err as Error).message);
         } finally {
             setIsAiLoading(false);
         }
     };
 
     const generateResumeScore = async () => {
-        const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-        if (!apiKey) {
-            alert("AI features require an API Key. Please create a .env.local file with NEXT_PUBLIC_GEMINI_API_KEY=your_key");
-            return;
-        }
-
         setIsAiLoading(true);
         try {
-            const genAI = new GoogleGenAI({ apiKey });
             const resumeContext = JSON.stringify({
                 summary: data.summary,
                 experiences: data.experiences,
@@ -307,24 +318,13 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                 education: data.education
             });
 
-            const prompt = `Analyze this resume content for ATS compatibility and overall impact. 
-            Provide a strict numerical score (0-100) and 3 short, critical, actionable bullet points for improvement.
-            Format response as JSON: { "score": 85, "feedback": ["Fix X", "Improve Y", "Add Z"] }
-            Resume Data: ${resumeContext}`;
-
-            const response = await genAI.models.generateContent({
-                model: 'gemini-2.0-flash',
-                contents: prompt,
-                config: { responseMimeType: "application/json" }
-            });
-
-            if (response.text) {
-                const result = JSON.parse(response.text);
+            const result = await aiService.generateResumeScore(resumeContext);
+            if (result) {
                 setAiScore(result);
             }
         } catch (err) {
             console.error("AI Scoring failed", err);
-            alert("Analysis failed. Please try again.");
+            alert((err as Error).message);
         } finally {
             setIsAiLoading(false);
         }
@@ -335,44 +335,72 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
             alert("Please enter a job title and company.");
             return;
         }
-        const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-        if (!apiKey) {
-            alert("AI features require an API Key.");
-            return;
-        }
 
         setIsAiLoading(true);
         try {
-            const genAI = new GoogleGenAI({ apiKey });
-            const prompt = `Generate a professional resume experience entry for a "${aiJobTitle}" role at "${aiJobCompany}". 
-            Include 3-4 impactful bullet points using strong action verbs and metrics. 
-            Return ONLY the text content for the description.`;
-
-            const response = await genAI.models.generateContent({
-                model: 'gemini-2.0-flash',
-                contents: prompt,
-            });
-
-            if (response.text) {
+            const desc = await aiService.generateExperienceEntry(aiJobTitle, aiJobCompany);
+            if (desc) {
                 const newExp: Experience = {
                     id: Date.now().toString(),
                     company: aiJobCompany,
                     role: aiJobTitle,
                     dates: '2023 - Present',
-                    desc: response.text.trim()
+                    desc
                 };
                 setData(prev => ({
                     ...prev,
                     experiences: [newExp, ...prev.experiences]
                 }));
-                // Reset fields
                 setAiJobTitle('');
                 setAiJobCompany('');
-                setActiveTab('content'); // Switch to content to show the new entry
+                setActiveTab('content');
             }
         } catch (err) {
             console.error("AI Generation failed", err);
-            alert("Generation failed. Please try again.");
+            alert((err as Error).message);
+        } finally {
+            setIsAiLoading(false);
+        }
+    };
+
+    const generateFullResume = async (jobTitle: string, experienceLevel: string) => {
+        setIsAiLoading(true);
+        try {
+            const generatedData = await aiService.generateFullResume(jobTitle, experienceLevel);
+
+            if (generatedData) {
+                // Ensure IDs are strings and unique
+                const cleanExperiences = generatedData.experiences?.map((exp: any, i: number) => ({
+                    ...exp,
+                    id: Date.now().toString() + i
+                })) || [];
+
+                const cleanEducation = generatedData.education?.map((edu: any, i: number) => ({
+                    ...edu,
+                    id: Date.now().toString() + i + 10
+                })) || [];
+
+                const cleanSkillsDetail = generatedData.skillsDetail?.map((skill: any, i: number) => ({
+                    ...skill,
+                    id: Date.now().toString() + i + 20
+                })) || [];
+
+                setData(prev => ({
+                    ...prev,
+                    ...generatedData,
+                    experiences: cleanExperiences,
+                    education: cleanEducation,
+                    skillsDetail: cleanSkillsDetail,
+                    templateId: prev.templateId, // Keep existing template
+                    accentColor: prev.accentColor, // Keep existing color
+                    sectionTitles: prev.sectionTitles // Keep existing titles
+                }));
+                setActiveTab('content');
+            }
+        } catch (err) {
+            console.error("Full Resume Generation failed", err);
+            const errorMessage = err instanceof Error ? err.message : "Unknown error";
+            alert(`Generation failed: ${errorMessage}. Check console for details.`);
         } finally {
             setIsAiLoading(false);
         }
@@ -781,6 +809,45 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                                         </p>
                                     </div>
                                 </section>
+
+                                {/* Full Resume Generator */}
+                                <section className="space-y-4">
+                                    <h3 className="text-xs font-black text-slate-900 dark:text-white border-l-2 border-slate-900 dark:border-white pl-3 uppercase tracking-widest">
+                                        Full Resume Generator
+                                    </h3>
+                                    <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-5 border border-slate-100 dark:border-slate-800 space-y-4">
+                                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 rounded-lg text-[10px] flex gap-2">
+                                            <Sparkles size={14} className="shrink-0 mt-0.5" />
+                                            <p>Enter a role and experience level, and our AI will generate a complete, professional resume for you.</p>
+                                        </div>
+                                        <div>
+                                            <label className={labelClasses}>Target Role</label>
+                                            <input
+                                                className={inputClasses}
+                                                value={fullGenJobTitle}
+                                                onChange={(e) => setFullGenJobTitle(e.target.value)}
+                                                placeholder="e.g. Marketing Manager"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className={labelClasses}>Experience Level</label>
+                                            <input
+                                                className={inputClasses}
+                                                value={fullGenExpLevel}
+                                                onChange={(e) => setFullGenExpLevel(e.target.value)}
+                                                placeholder="e.g. Senior / 5 years"
+                                            />
+                                        </div>
+                                        <button
+                                            onClick={() => generateFullResume(fullGenJobTitle, fullGenExpLevel)}
+                                            disabled={!fullGenJobTitle}
+                                            className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold uppercase tracking-wider hover:opacity-90 active:scale-95 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        >
+                                            <Sparkles size={16} />
+                                            Generate Full Resume
+                                        </button>
+                                    </div>
+                                </section>
                             </div>
                         )}
                     </div>
@@ -798,6 +865,9 @@ const ResumeEditor: React.FC<{ onBack: () => void, initialTemplate: TemplateId }
                         <div className="flex items-center gap-2 sm:gap-4">
                             <button onClick={toggleTheme} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-900 dark:text-white transition-all shrink-0">
                                 {isDark ? <Sun size={18} /> : <Moon size={18} />}
+                            </button>
+                            <button onClick={handleClearData} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-slate-500 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-400 transition-all shrink-0" title="Clear All Data">
+                                <Trash2 size={18} />
                             </button>
                             <button onClick={handleDownloadPDF} className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 px-3 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center gap-2 uppercase tracking-wider shrink-0">
                                 <FileDown size={14} />

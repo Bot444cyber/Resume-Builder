@@ -1,7 +1,8 @@
 
+
 import React, { useState } from 'react';
 import { Sparkles, ShieldCheck, Send, Loader2 } from 'lucide-react';
-import { GoogleGenAI } from '@google/genai';
+import * as aiService from '../../services/ai';
 
 const AIResumeAnalyzer: React.FC = () => {
     const [inputText, setInputText] = useState('');
@@ -12,29 +13,8 @@ const AIResumeAnalyzer: React.FC = () => {
         if (!inputText.trim()) return;
         setIsLoading(true);
         try {
-            // NOTE: Using process.env.NEXT_PUBLIC_API_KEY if exposed, or strictly backend.
-            // For this demo port, we keep it as is but warn about key leakage.
-            // Ideally this should call a server action or API route.
-            const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.API_KEY || '';
-            if (!apiKey) {
-                throw new Error("API Key not found");
-            }
-            const ai = new GoogleGenAI({ apiKey });
-            const response = await ai.models.generateContent({
-                model: 'gemini-2.0-flash-exp', // Updated model name or keep as in source if valid
-                contents: {
-                    role: 'user',
-                    parts: [{ text: `Analyze this resume content and provide 3 ultra-high impact bullet points of professional feedback. Focus on quantifiable achievements and elite action verbs: \n\n${inputText}` }]
-                },
-                config: {
-                    // thinkingConfig: { thinkingBudget: 0 } // This might depend on the SDK version, commenting out to be safe or adapting
-                }
-            });
-            // Casting response to any to support potential SDK version differences without breaking build.
-            // Assuming response has a 'text' property or method as per original source intent.
-            const responseText = typeof (response as any).text === 'function' ? (response as any).text() : (response as any).text;
-
-            setAnalysis(responseText || 'No response from AI.');
+            const result = await aiService.generateResumeInsights(inputText);
+            setAnalysis(result);
         } catch (error) {
             console.error(error);
             setAnalysis('Strategic analysis unavailable at the moment. Please try again shortly or check API Key configuration.');
